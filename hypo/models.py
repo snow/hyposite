@@ -42,7 +42,7 @@ def _create_user_profile(instance, created, **kwargs):
 
 class Post(models.Model):
     '''A Hypo post'''    
-    text = models.TextField
+    text = models.TextField()
     summary = models.CharField(max_length=140, blank=True, default='')
     
     id_str = models.CharField(max_length=255, default='')
@@ -51,8 +51,13 @@ class Post(models.Model):
     F_PLAIN = 0
     F_HTML = 1
     F_MARKDOWN = 2
-    FORMATS = [F_PLAIN, F_HTML, F_MARKDOWN]
-    format = models.PositiveSmallIntegerField(choices=FORMATS, default=F_PLAIN)    
+    FORMATS = {
+        F_PLAIN: F_PLAIN, 
+        F_HTML: F_HTML, 
+        F_MARKDOWN: F_MARKDOWN
+    }
+    format = models.PositiveSmallIntegerField(choices=FORMATS.items(), 
+                                              default=F_PLAIN)    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     

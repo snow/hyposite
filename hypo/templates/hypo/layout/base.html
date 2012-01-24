@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--<meta name="language" content="zh_cn" />-->
+    <title>{% block title %}Hypo{% endblock %}</title>
+    
+    <!--<base href="/w/" />-->
+    
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}hypo/c/blueprint-1.0.1/reset.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}hypo/c/blueprint-1.0.1/typography.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}hypo/c/blueprint-1.0.1/forms.css" />
+    <!--<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/fileuploader.css" />-->
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}hypo/c/common.css?r=0.1.5" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}hypo/c/jquery-ui-1.8.17.custom.css?r=0.1.0" />
+    
+    {% if debug %}    
+    <script src="{{ STATIC_URL }}hypo/s/jquery-1.7.1.min.js"></script>    
+    {% else %}    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    {% endif %}
+    <script src="{{ STATIC_URL }}hypo/s/jquery-ui-1.8.17.custom.min.js?r=0.1.0"></script>
+    <!--<script src="{{ STATIC_URL }}common/s/jquery-ui-1.8.17.custom.min.js"></script>-->
+    <script src="{{ STATIC_URL }}hypo/s/jquery.cookie.js"></script>
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}common/s/jquery.ba-bbq-1.2.1.min.js"></script>-->
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}common/s/fileuploader.js"></script>-->
+    <script src="{{ STATIC_URL }}hypo/s/rcp.js?r=0.1.2"></script>
+    <script src="{{ STATIC_URL }}hypo/s/rcp.django.js?r=0.1.2"></script>
+    <script src="{{ STATIC_URL }}hypo/s/common.js?r=0.1.6"></script>
+    {% block extra_scripts %}{% endblock %}
+</head>
+
+<body class="{% block page_class %}{% endblock %}">
+{% block body %}
+    {% block layout_hd %}
+    <header>
+        <a class="logo" href="/{% if user.is_authenticated %}dashboard/{% endif %}">Hypo</a>
+        
+        {% if user.is_authenticated %}
+        <section class="curuser">
+            <a class="signout" href="/accounts/signout/">signout</a>
+            <a class="settings" href="/accounts/settings/">settings</a>
+            &lt; 
+            {% if messages %}
+            <div class="messages">
+                <span class="count">{{ messages|length }}</span>
+                <div class="ls">
+                {% for message in messages %}      
+                    <a class="message {% if message.tags %}{{ message.tags }}{% endif %}"
+                       {% if message.is_persistent %} 
+                       href="{% url message_mark_read message.pk %}"
+                       {% else %}
+                       href="#"
+                       {% endif %}
+                       title="click to dismiss">{{ message }}</a>
+                {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <span class="username">{{ user.username }}</span>            
+        </section>
+        {% endif %}
+        
+        <div class="c"></div>
+    </header>
+    {% endblock %}
+    
+    <section class="bd">
+        {% block layout_bd %}{% endblock %}
+        <div class="c"></div>
+    </section>
+    
+    {% block layout_ft %}
+    <div class="c"></div>
+    <footer>
+        <a href="/under_construction/">why hypo</a> |
+        <a href="https://plus.google.com/101080974312491458888/" target="_blank">about snow</a> |
+        <a href="https://github.com/snow/prjhypo/" target="_blank">source</a>
+    </footer>
+    {% endblock %}
+    
+    {% block layout_extra %}
+    {% endblock %}
+{% endblock %}
+</body>
+</html>
