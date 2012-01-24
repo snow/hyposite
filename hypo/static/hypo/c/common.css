@@ -69,33 +69,44 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
  * body
  */
 /* layout */
-body>.bd {min-height:100%}
-header+.bd {margin-top:-30px}
+/* push footer */
+.layout-bd,
+.layout-bdwrap {min-height:100%}
 
-.bd>.sec-main {padding:10px 330px 0 20px}
-    header+.bd>.sec-main {padding-top:40px}
-.bd>.sec-right {position:fixed; top:37px; right:0; padding-right:10px; width:300px; 
+.layout-bdwrap {margin-top:-30px}
+.layout-bdwrap .layout-bd {padding-top:30px}
+/* end push footer */
+/*.layout-bd>.sec-right {position:fixed; top:37px; right:0; padding-right:10px; width:300px; 
                  overflow-x:hidden}
-.bd>.sec-left {position:absolute; margin-top:5px; padding:20px 10px 50px 10px; 
+.layout-bd>.sec-left {position:absolute; margin-top:5px; padding:20px 10px 50px 10px; 
                border-right:1px dashed #999; width:100px; text-align:right}
-    header+.bd>.sec-left {margin-top:42px}
+    header+.bd>.sec-left {margin-top:42px}*/
 
-.sec-left+.sec-main {padding-left:140px}
+/*.sec-left+.sec-main {padding-left:140px}*/
 
 /*.bd>.c:first-child {height:38px; width:100%}*/
-.bd>.c:last-child {height:80px; width:100%}
+.col-m-r .sec-m {float:left}
+.sec-r {float:left; margin-left:50px; width:260px}
 
-.sec-main section {margin-bottom:20px}       
+
+/*
+ * main section
+ */
+.sec-m {width:600px; padding:10px 0 0 10px}
+
+.layout-bd>.c:last-child {height:80px; width:100%}
+
+.sec-m section {margin-bottom:20px}
 
 /*
  * right sidebar
  */
-.sec-right h3 {margin:0.5em 0; color:#666; font-size:1.8em}
-.sec-right h3:before {content:'> '; color:#999}
+.sec-r h3 {margin:0.5em 0; color:#666; font-size:1.8em}
+.sec-r h3:before {content:'> '; color:#999}
 
-.sec-right h4 {margin-bottom:0.5em}
+.sec-r h4 {margin-bottom:0.5em}
 
-.sec-right>section {margin-bottom:30px}
+.sec-r>section {margin-bottom:30px}
 
 /*
  * left nav
@@ -142,8 +153,8 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * under construction
  */
-.pg-under_construction .sec-main {float:none; padding:100px 0 50px; text-align:center}
-.pg-under_construction .sec-main a {font-size:2em}
+.pg-under_construction .sec-m {float:none; padding:100px 0 50px; text-align:center}
+.pg-under_construction .go_back {font-size:2em}
 /*
  * index
  */

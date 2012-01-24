@@ -27,3 +27,6 @@ class IndexV(gv.ListView):
 #        else:                
 #            self.queryset = ikr.ImageCopy.objects.order_by('-id')[0:50]
 #            return super(IndexV, self).get(request, *args, **kwargs)    
+
+class M_RV(gv.TemplateView):
+    template_name = 'hypo/layout/m_r.html'

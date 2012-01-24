@@ -65,10 +65,15 @@
     </header>
     {% endblock %}
     
-    <section class="bd">
-        {% block layout_bd %}{% endblock %}
+    {% block layout_bd %}
+    <div class="layout-bdwrap">
+        <section class="layout-bd">
+            {% block layout_bd_inr %}{% endblock %}
+            <div class="c"></div>
+        </section>
         <div class="c"></div>
-    </section>
+    </div>
+    {% endblock %}
     
     {% block layout_ft %}
     <div class="c"></div>
