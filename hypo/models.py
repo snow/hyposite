@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
+from django import forms
 
 from pyrcp import struk
 
@@ -13,7 +14,7 @@ class UserProfile(models.Model):
     only use for storing extra data of an user 
     other models associate with user by django.contrib.auth.models.User
     '''
-    owner = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, unique=True)
     is_first_name_first = models.BooleanField(default=True)    
     
     def get_fullname(self):
@@ -36,8 +37,18 @@ class UserProfile(models.Model):
 def _create_user_profile(instance, created, **kwargs):
     '''Create empty user profile on user model created'''
     if created:
-        profile = UserProfile(owner=instance)
+        profile = UserProfile(user=instance)
         profile.save()    
+
+
+class UserForm(forms.ModelForm):
+    ''''''
+    fullname = forms.CharField()
+    is_first_name_first = forms.BooleanField(initial=True)
+    
+    class Meta:
+        model = User
+        exclude = ('password', 'last_login', 'date_joined')
 
 
 class Post(models.Model):
