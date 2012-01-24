@@ -13,8 +13,8 @@ class UnderConstructionV(gv.TemplateView):
         
         return super(UnderConstructionV, self).get(request, *args, **kwargs)
     
-class IndexV(gv.ListView):
-    template_name = 'hypo/index.html'
+class IndexV(gv.TemplateView):
+    template_name = 'hypo/pg/index.html'
     
 #    def get_context_data(self, *args, **kwargs):
 #        context = super(IndexV, self).get_context_data(*args, **kwargs)
@@ -27,6 +27,3 @@ class IndexV(gv.ListView):
 #        else:                
 #            self.queryset = ikr.ImageCopy.objects.order_by('-id')[0:50]
 #            return super(IndexV, self).get(request, *args, **kwargs)    
-
-class M_RV(gv.TemplateView):
-    template_name = 'hypo/layout/m_r.html'

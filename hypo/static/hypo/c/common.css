@@ -70,11 +70,11 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
  */
 /* layout */
 /* push footer */
-.layout-bd,
-.layout-bdwrap {min-height:100%}
+.row-bd,
+.row-bd_wrap {min-height:100%}
 
-.layout-bdwrap {margin-top:-30px}
-.layout-bdwrap .layout-bd {padding-top:30px}
+.row-bd_wrap {margin-top:-30px}
+.row-bd_wrap .row-bd {padding-top:30px}
 /* end push footer */
 /*.layout-bd>.sec-right {position:fixed; top:37px; right:0; padding-right:10px; width:300px; 
                  overflow-x:hidden}
@@ -94,7 +94,7 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
  */
 .sec-m {width:600px; padding:10px 0 0 10px}
 
-.layout-bd>.c:last-child {height:80px; width:100%}
+.row-bd>.c:last-child {height:80px; width:100%}
 
 .sec-m section {margin-bottom:20px}
 
@@ -109,13 +109,6 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
 .sec-r>section {margin-bottom:30px}
 
 /*
- * left nav
- */
-.sec-left a,
-.sec-left span {display:block}
-.sec-left a {text-decoration:none}
-
-/*
  * messages
  */
 body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-index:3}
@@ -124,28 +117,11 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
 /*
  * signin
  */
-.sec-right .signin {font-size:1.5em}
-    .sec-right .signin h3 {font-size:1.5em}
-    .sec-right .noopenid, 
-    .sec-right .noopenid a {color:#999}
-/*
- * upload
- */
-.sec-right>.upload .selectfile {font-size:1.8em; margin-bottom:5px}
+.sec-r .signin {font-size:1.5em}
+    .sec-r .signin h3 {font-size:1.5em}
+    .sec-r .noopenid, 
+    .sec-r .noopenid a {color:#999}
 
-.sec-right>.upload .or {display:block; color:#666; text-align:center}
-.sec-right>.upload ul {color:#666; font-size:1.5em}
-
-.sec-right>.upload .selectfile {text-decoration:none}
-.sec-right>.upload .wrap [name=img] {position:absolute; opacity:0}
-.sec-right>.upload .wrap:hover .selectfile {text-decoration:underline}
-
-body>.dropzone {position:fixed; top:0; left:0; width:100%; height:100%; 
-                cursor:pointer}
-body>.dropzone .inr {position:absolute; top:0; 
-                     padding:100px; border:10px dashed #999; color:#333;
-                     font-size:6em; vertical-align:middle; text-align:center} 
-body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * page specifics
  * ----------------
@@ -157,146 +133,15 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 .pg-under_construction .go_back {font-size:2em}
 /*
  * index
- */
-.pg-index .bd>.bg {position:fixed; top:0; left:0; width:100%; height:100%; 
-               background:#000}
-.pg-index .bd>.bg img {float:left; margin:2px 0 0 2px}
+ */    
+.pg-index .sec-m {width:500px; font-size:1.2em}
+.pg-index .sec-r {position:fixed; margin-left:530px; width:300px}
 
-.pg-index .bd>.wrap {position:relative; margin:0 auto; width:830px; height:100%; 
-                 z-index:1}
-    .pg-index .bd>.wrap .bg {position:absolute; top:0; left:0; width:100%; 
-                         height:100%; background:#fff; opacity:0.85}
-    .pg-index .bd>.wrap .content {position:relative; padding:10px 20px 100px; z-index:2}
-    
-    .pg-index .sec-main {position:relative; float:left; width:500px; font-size:1.5em}
-    .pg-index .right {position:fixed; margin-left:530px; width:300px}
-    
-    .pg-index .sec-main h3 {font-size:1.2em}
-    
-    .introikr {margin-top:20px}
-    .introikr h1 {font-size:3em}
-    .introikr .slogun {margin-bottom:0.5em; font-size:1.5em}
-    .introikr .explore {margin-bottom:0.5em; font-size:x-large}
-    
-    .news {margin-top:1.5em}
-/*
- * image list
- */
-.imgctn {float:left; display:inline; margin:0 10px; max-width:180px; 
-            min-height:240px; text-align:center}
-    .imgctn .wrap {position:relative; display:inline-block}
-        .imgctn img {max-width:180px; max-height:180px; 
-                     border:5px solid transparent; cursor:pointer}
-        .imgctn.on img {border-color:#999}
-        .imgctn .mask {position:absolute; display:none; top:0; left:0; width:100%; 
-                          height:100%; background:#000; opacity:0.8}
-            .imgctn.ing .mask,
-            .imgctn.queue .mask,
-            .imgctn.err .mask {display:block}
-            
-            .imgctn .view {position:absolute; display:none; right:10px; top:10px; 
-                           width:40px; height:40px; opacity:0.6;
-                           background:#fff url('/s/common/i/view-40.png')}
-                .imgctn:hover .view {display:block}
-                .imgctn .view:hover {opacity:0.8}
-                
-            .imgctn .retry {display:block; width:100%; height:100%; 
-                                     font-size:2em; text-align:center}
+.pg-index .sec-m h3 {font-size:1.2em}
 
-    .imgctn figcaption {color:#999}
-        .imgctn .title,
-        .imgctn .desc,
-        .imgctn .size,
-        .imgctn .status {overflow:hidden}
-        .imgctn .title {height:1.5em; line-height:1.5em; margin:0}
-        .imgctn .file_id {display:none}
-        .imgctn p {margin:0}
-        .imgctn.ing .status {padding-left:18px; 
-            background:url('/s/common/i/loading-16.gif') no-repeat center left}        
-        .imgctn.err .status {padding-left:18px; 
-            background:url('/s/common/i/alert-16.png') no-repeat center left}
-            
-    .imgls .empty {font-size:xx-large; color:#999}
-    
-/*
- * darkbox
- */
-.darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-          background:#000; text-align:center; z-index:4}
-          
-    .darkbox header {position:fixed; width:100%; color:#ccc; z-index:5;
-                     border-bottom:2px dashed #666; text-align:left}
-        .darkbox header .bg {position:absolute; width:100%; height:100%; 
-                             background:#000; opacity:0.9; z-index:-1}             
-                     
-        .darkbox header .share,
-        .darkbox header .move2album {float:left}
-        
-        .darkbox header a,
-        .darkbox header span {display:block; font-size:1.2em; padding:4px 8px}
-        .darkbox header span {}
-        
-        .darkbox header .ext {position:absolute; display:none; 
-                              border:2px solid #666; border-top:none; 
-                              padding:0 2px 4px; background:#000}
-        .darkbox header .share:hover .ext,
-        .darkbox header .move2album:hover .ext {display:block}
-        
-        .darkbox header .right a {float:left}
-        
-    
-    .darkbox .bd {display:table-cell; vertical-align:middle}
-    .darkbox .prev,
-    .darkbox .next {position:fixed; display:table-cell; top:0;
-                    width:30%; height:100%; vertical-align:middle; color:#666; 
-                    opacity:0; background:no-repeat center center}
-        .darkbox .prev:hover,
-        .darkbox .next:hover {opacity:1}
-        .darkbox .prev {left:0; background-image:url('/s/common/i/arrow-l-45_93.png')}
-        .darkbox .next {right:0; background-image:url('/s/common/i/arrow-r-45_93.png')}
-    
-    .darkbox footer {position:fixed; left:0; bottom:0; width:100%; height:78px; 
-                     overflow:hidden}
-        .darkbox .thumbs {position:relative}
-        .darkbox .thumb {position:relative; display:inline-block; padding:2px; 
-                         margin-right:-2px;z-index;2; cursor:pointer}
-            .darkbox .thumb img {border:1px solid transparent}
-            .darkbox .thumb .mask {position:absolute; top:0; left:0; width:100%; 
-                                   height:100%; background:#000; opacity:0.7}
-            
-            .darkbox .thumb.on {padding:1px; border:1px solid #000; background:#fff}
-            .darkbox .thumb.on img {border:1px solid #000}
-            .darkbox .thumb.on .mask {display:none}
+.pg-index .intro {margin-top:20px}
+.pg-index .intro h1 {font-size:3em}
+.pg-index .intro .slogun {margin-bottom:0.5em; font-size:1.5em}
+.pg-index .intro .explore {margin-bottom:0.5em; font-size:x-large}
 
-/*
- * actionbar
- */
-.actionbar {position:fixed; display:none; top:0; width:100%; 
-            border-bottom:2px solid #666; font-size:1.2em; background:#fff; 
-            z-index:3}
-        
-    .actionbar>div {float:left}
-    
-    .actionbar .blk,
-    .actionbar .move2album .ext a,
-    .actionbar .move2album .ext span {display:block; padding:4px 8px}
-    
-    .actionbar .sp {padding:4px}
-        
-    .actionbar .ext {position:absolute; display:none; margin-left:-4px;
-                     border:2px solid #666; border-top:none; 
-                     padding:0 2px 4px; background:#fff}
-    .actionbar :hover>.ext {display:block}
-    
-    .actionbar .del {float:left; color:#999}
-        
-/*
- * 404 and 500
- */
-.pg-404 .errmsg,
-.pg-500 .errmsg {padding-top:50px; text-align:center}
-
-/*
- * single image
- */
-.pg-image .darkbox {display:table}
+.pg-index .news {margin-top:1.5em}

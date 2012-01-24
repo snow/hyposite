@@ -1,0 +1,95 @@
+{% extends 'hypo/layout/row-bf_col-mr.html' %}
+
+{% block page_class %}pg-index{% endblock %}
+
+{% block sec_m %}
+<article class="intro">
+    <h1>Hypo</h1>
+    <p class="slogun">You could speak on internet.</p>
+    <!--<p class="explore"><a href="/public/">Explore</a></p>-->
+    <h3>Features</h3>
+    <ul class="features">
+    <!--<li>upload massive images in queue</li>
+    <li>drag and drop images to page to upload</li>
+    <li>grub <a href="https://github.com/snow/ikran" target="_blank">source</a> and deploy your own</li>-->
+    </ul>
+</article>
+
+<article class="caution">
+    <h3>Caution!!!</h3>
+    <ul>                
+    <li>NOT YET READY FOR DAILY USE!!</li>
+    <!--<li>for now, all images you upload will be PUBLIC!!</li>-->
+    <li>only tested under chrome15 and firefox8, no plan to support IE10-</li>
+    <li>If I broke up the database, your data MAY lose</li>
+    </ul>
+</article>
+
+<article class="todo">
+    <h3>To do</h3>
+    <ul>
+    <!--<li>chrome extennsion: context menu "rehost to ikran"</li>
+    <li>grub douban album</li>
+    <li>albums</li>
+    <li>tags</li>
+    <li>privacy settings</li>
+    <li>share to twitter/douban/g+/fb ...</li>-->
+    </ul>
+    Feel free to <a href="/nemo/" target="_blank">vote for your idea</a>
+</article>
+
+<article class="news">
+    <h3>News</h3>
+    <ul>
+    <li class="tpl"><span class="message"></span><span class="data"></span></li>
+    </ul>
+</article>
+{% endblock %}
+
+{% block sec_r %}
+<section class="signin">
+    <h3>Signin</h3>
+    <div>Use your account on...
+        <ul class="singinwith">
+        <li><a class="google" href="/thirdparty/google/authenticate/?{{ querystring }}">Google</a></li>
+        <li><a class="twitter" href="/thirdparty/twitter/authenticate/?{{ querystring }}">Twitter</a></li>
+        <li><a class="douban" href="/thirdparty/douban/authenticate/?{{ querystring }}">Douban</a></li>
+        </ul>
+    </div>
+    <div class="noopenid">
+        If you want ikran has it's own signup/signin<br />
+        <a href="/nemo/" target="_blank">Vote for your opinion!</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block layout_extra %}
+<script>
+(function($){
+    var j_news = $('.news ul'),
+        j_li_tpl = j_news.find('.tpl').remove().removeClass('tpl');
+        
+    $.ajax('https://api.github.com/repos/snow/prjhypo/commits', {
+        dataType: 'jsonp json',
+        success: function(resp){
+            var limit = 10;
+            for(i=0; i<limit; i++){
+                try{
+                    var commit = resp.data[i].commit,
+                        msg = commit.message;
+                    if('mf' === msg){
+                        // skip those "mf" commit
+                        limit++;
+                    } else {
+                        var j_li = j_li_tpl.clone();
+                        j_li.find('.message').text(msg);
+                        j_li.find('.date').text(commit.author.date);
+                        j_li.appendTo(j_news);
+                    }
+                } catch (e) {}
+            }
+        }
+    });
+})(jQuery);
+</script>
+{% endblock %}
