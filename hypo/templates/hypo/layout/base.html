@@ -14,11 +14,11 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}hypo/c/common.css?r=0.1.5" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}hypo/c/jquery-ui-1.8.17.custom.css?r=0.1.0" />
     
-    {% if debug %}    
+    {#% if debug %#}    
     <script src="{{ STATIC_URL }}hypo/s/jquery-1.7.1.min.js"></script>    
-    {% else %}    
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-    {% endif %}
+    {#% else %#}    
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>-->
+    {#% endif %#}
     <script src="{{ STATIC_URL }}hypo/s/jquery-ui-1.8.17.custom.min.js?r=0.1.0"></script>
     <!--<script src="{{ STATIC_URL }}common/s/jquery-ui-1.8.17.custom.min.js"></script>-->
     <script src="{{ STATIC_URL }}hypo/s/jquery.cookie.js"></script>
@@ -35,6 +35,14 @@
     {% block layout_hd %}
     <header>
         <a class="logo" href="/{% if user.is_authenticated %}dashboard/{% endif %}">Hypo</a>
+        
+        <nav>
+            {% if user.is_authenticated %}
+            <a href="/site/{{ user.username }}/">Mine</a>
+            <a href="/post/create/">+Post</a>
+            {% endif %}
+            <a href="/public/">Explore</a>
+        </nav>
         
         {% if user.is_authenticated %}
         <section class="curuser">

@@ -1,0 +1,15 @@
+{% extends 'hypo/layout/row-hbf_col-m.html' %}
+
+{% block page_class %}pg-post_create{% endblock %}
+
+{% block sec_m %}
+<h1>Write Post</h1>
+<form action="" method="POST" >
+    <textarea name="source"></textarea>
+    <input name="format" type="hidden" value="0" />
+    {% csrf_token %}
+    <div class="formrow">
+        <button type="submit">Post</button>
+    </div>
+</form>
+{% endblock %}

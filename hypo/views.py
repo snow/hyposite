@@ -19,6 +19,16 @@ class IndexV(gv.TemplateView):
     template_name = 'hypo/pg/index.html'
 
 
+class DashboardV(gv.ListView):
+    ''''''
+    paginate_by = 10
+    model = hypo.Post
+    template_name = 'hypo/pg/dashboard.html'
+    
+    def get_queryset(self):
+        return hypo.Post.objects.filter(author=self.request.user).\
+                                 order_by('-updated')
+
 class SignupV(gv.CreateView):
     ''''''
     form_class = hypo.UserForm
@@ -72,3 +82,19 @@ class SignupV(gv.CreateView):
             # if missing 'pyfyd.utils.ThirdpartyAuthBack' in settings,
             # this may happen
             raise Exception('auth failed')
+        
+        
+class PostCreateV(gv.CreateView):
+    ''''''
+    form_class = hypo.PostForm
+    template_name = 'hypo/pg/post_create.html'
+    success_url = '/dashboard/'
+    
+    def form_valid(self, form):
+        post = hypo.Post(author=self.request.user,
+                         format=form.cleaned_data['format'])
+        post.modify_content(form.cleaned_data['source'])
+        post.save()
+        
+        self.object = post # hack for super methods to work
+        return HttpResponseRedirect(self.success_url)

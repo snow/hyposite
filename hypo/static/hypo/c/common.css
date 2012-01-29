@@ -34,8 +34,8 @@ body>header {position:relative; padding:0 10px;
     body>header nav {margin-left:10px; padding-left:10px}
         body>header nav a {padding:0 10px}
         
-    body>header .curuser>* {display:inline-block; height:2.5em; 
-                              line-height:2.5em; font-size:1em}   
+    body>header .curuser>* {display:inline-block; height:2em; 
+                              line-height:2em; font-size:1.2em}   
                                
     body>header .curuser>span {margin-right:5px}
     
@@ -115,12 +115,19 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
     body>.messages .message  {display:block; margin:0 20px 20px; font-size:1.2em; text-decoration:none}
 
 /*
+ * post list
+ */
+.post_list article {white-space:pre-wrap}
+
+/*
  * signin
  */
 .sec-r .signin {font-size:1.5em}
     .sec-r .signin h3 {font-size:1.5em}
     .sec-r .noopenid, 
     .sec-r .noopenid a {color:#999}
+
+
 
 /*
  * page specifics

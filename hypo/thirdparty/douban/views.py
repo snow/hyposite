@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 
 from pyfyd.models import DoubanAccount
-#from pyfyd.utils import ThirdpartyAuthBackend
+from pyfyd.utils import ThirdpartyAuthBackend
 import pyfyd.douban.views as pdv
 
 
@@ -37,7 +37,7 @@ class AuthenticateReturnV(pdv.AuthReturnV):
             
             return HttpResponseRedirect('/accounts/signup/')
         else:
-            user = authenticate(account=linked)
+            user = authenticate(account=linked, CID=ThirdpartyAuthBackend.CID)
             
             if user:
                 login(request, user)

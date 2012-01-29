@@ -1,3 +1,5 @@
+import cgi
+
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
@@ -53,7 +55,8 @@ class UserForm(forms.ModelForm):
 
 class Post(models.Model):
     '''A Hypo post'''    
-    text = models.TextField()
+    source = models.TextField()
+    output = models.TextField()
     summary = models.CharField(max_length=140, blank=True, default='')
     
     id_str = models.CharField(max_length=255, default='')
@@ -72,12 +75,32 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     
+    def modify_content(self, source):
+        self.source = source
+        
+        if self.F_PLAIN == self.format:
+            #self.output = cgi.escape(self.source)
+            self.output = self.source
+        else:
+            raise NotImplemented()
+        
+        self.summary = self.extract_summary(self.output)
+        
+    @classmethod
+    def extract_summary(cls, output):
+        return output
+    
 @receiver(post_save, sender=Post, 
           dispatch_uid='hypo.models.assign_post_id_str')
 def _assign_post_id_str(instance, created, **kwargs):
     '''Create empty user profile on user model created'''
     if created:
         instance.id_str = struk.int2str(instance.id)
-        instance.save()  
+        instance.save()
         
-        
+class PostForm(forms.ModelForm):
+    ''''''
+    
+    class Meta:
+        model = Post
+        fields = ('source', 'format')        
