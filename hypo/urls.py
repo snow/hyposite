@@ -5,13 +5,21 @@ import views as v
 
 urlpatterns = patterns('',
     url(r'^$', v.IndexV.as_view()),
+    
+    
+    url(r'^site/demo/$', v.DemoV.as_view()),
+    #url(r'^site/create/', login_required(v.SiteCreateV.as_view())),
+    url(r'^site/(?P<slug>.+)/$', v.SiteV.as_view()),
+    
     url(r'^dashboard/$', login_required(v.DashboardV.as_view())),
     
     url(r'^post/create/$', login_required(v.PostCreateV.as_view())),
     url(r'^post/create\.(?P<format>html|json)$', login_required(v.PostCreateV.as_view())),
     
-    url(r'thirdparty/', include('hypo.thirdparty.urls')),
-    url(r'accounts/signup/', v.SignupV.as_view()),
+    url(r'^thirdparty/', include('hypo.thirdparty.urls')),
+    
+    url(r'^accounts/signup/', v.SignupV.as_view()),
+    
     
     url(r'^under_construction/$', v.UnderConstructionV.as_view()),
     

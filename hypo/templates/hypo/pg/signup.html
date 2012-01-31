@@ -9,7 +9,7 @@
     {{ form.non_field_errors }}
     
     <fieldset>
-        <figcaption>Url of your site</figcaption>
+        <legend>Your site</legend>
         <div class="formrow username">
             <label>
                 <span class="label">http://{{ request.META.SERVER_NAME }}/site/</span>
@@ -17,18 +17,18 @@
             </label><br />
             {{ form.username.errors }}
         </div>
+        
+        <div class="formrow">            
+            <label>
+                <span class="label">Title</span>
+                <input name="title" type="text" value="{{ form.title.value|default:'' }}" />            
+            </label><br />
+            {{ form.email.errors }}
+        </div>
     </fieldset>
     
-    <!--<div class="formrow username">
-        <label>
-            <span class="label">username</span>
-            <input name="username" type="text" >
-        </label><br />
-        <span class="help">http://{{ request.META.SERVER_NAME }}/site/<span class="username">{username}</span> will be your site's url</span>
-    </div>-->
-    
     <fieldset>
-        <figcaption>Other stuff</figcaption>
+        <legend>About You</legend>
         <div class="formrow">            
             <label>
                 <span class="label">Email</span>
@@ -45,30 +45,6 @@
             </label>
             <span class="help">optional</span>
         </div>
-        
-        <div class="formrow firstnamerow">
-            <label>
-                <span class="label">First name</span>
-                <input name="first_name" type="text" value="{{ form.first_name.value|default:'' }}" />
-            </label><br />
-            {{ form.first_name.errors }}
-        </div>
-        
-        <div class="formrow lastnamerow">
-            <label>
-                <span class="label">Last name</span>
-                <input name="last_name" type="text" value="{{ form.last_name.value|default:'' }}" />
-            </label><br />
-            {{ form.last_name.errors }}
-        </div>
-        
-        <div class="formrow fnfrow">
-            <label>
-                <span class="label">First name first</span>
-                <input name="is_first_name_first" type="checkbox" 
-                       {% if form.is_first_name_first.value %}checked="checked"{% endif %} />
-            </label>
-        </div>
     </fieldset>
     
     {% csrf_token %}
@@ -77,89 +53,4 @@
         <button type="submit">Signup</button>
     </div>
 </form>
-
-<style>
-.formrow .label {display:inline-block; margin-right:5px; width:10em; text-align:right}
-.formrow .help {margin-left:5px}
-
-.username .help {margin-left:11em}
-</style>
-
-<script>
-(function($){
-    var j_form = $('#signupform'),
-        j_fullname_row = j_form.find('.fullnamerow'),
-        j_firstname_row = j_form.find('.firstnamerow'),
-        j_lastname_row = j_form.find('.lastnamerow'),
-        j_fnf_row = j_form.find('.fnfrow'),
-        
-        j_fullname_field = j_fullname_row.find('input'),
-        j_firstname_field = j_firstname_row.find('input'),
-        j_lastname_field = j_lastname_row.find('input'),
-        j_fnf_field = j_fnf_row.find('input'),
-        
-        is_name_extras_shown = false;
-        
-    function show_name_extras(){
-        j_firstname_row.show('fast');
-        j_lastname_row.show('fast');
-        j_fnf_row.show('fast');
-        
-        is_name_extras_shown = true;
-    }
-    
-    function hide_name_extras(){
-        j_firstname_row.hide();
-        j_lastname_row.hide();
-        j_fnf_row.hide();
-    }
-    
-    function split_fullname(){
-        var val = $.trim(j_fullname_field.val()),   
-            trunks = val.split(' '),
-            firstname = '',
-            lastname = '';
-        
-        if(1 < trunks.length && '' !== trunks[trunks.length-1]){
-            lastname = trunks.pop();            
-        }
-        
-        firstname = trunks.join(' ');
-        j_firstname_field.val(firstname);        
-        
-        if('' !== lastname){
-            j_lastname_field.val(lastname);
-            
-            if(!is_name_extras_shown){
-                show_name_extras();
-            }
-        }
-    }
-    
-    function combine_fullname(){
-        var firstname = $.trim(j_firstname_field.val()),
-            lastname = $.trim(j_lastname_field.val()),
-            is_fnf = ('checked' === j_fnf_field.attr('checked'));
-            
-        if(is_fnf){
-            fullname = firstname + ' ' + lastname;
-        } else {
-            fullname = lastname + ' ' + firstname;
-        }
-        
-        j_fullname_field.val(fullname);
-    }
-        
-    if('' === j_fullname_field.val()){
-        hide_name_extras();
-    } else {
-        split_fullname();
-    }
-    
-    j_fullname_field.on('keyup', split_fullname);
-    j_firstname_field.on('keyup', combine_fullname);
-    j_lastname_field.on('keyup', combine_fullname);
-    j_fnf_field.on('change', combine_fullname);
-})(jQuery);
-</script>
 {% endblock %}
