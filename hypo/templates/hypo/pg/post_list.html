@@ -3,7 +3,8 @@
 {% block page_class %}pg-site{% endblock %}
  
 {% block sec_m %}
-<h1 class="site_name">{{ site.title }}</h1>
+<h1 class="site_title">{{ site.title }}{% if owner == user %}<sup><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
+
 <section class="post_list">
     <article>
         <div class="content">Dreams keep me young
@@ -99,9 +100,15 @@ Oh yeah!</div>
 {% block sec_r %}
 <section class="author">
     <img src="{{ STATIC_URL }}hypo/i/demo/4042398855_83d4b31b2b_z.jpg" 
-         alt="snow hellsing" width="260px" />
+         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />
+    <!--<img src="{{ owner.get_profile.get_gravatar_uri }}" 
+         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />-->         
     <h2 class="fullname">{{ owner.get_profile.fullname }}</h2>
-    <p class="intro">Just a stray cat</p>
+    {% if user == owner and '' == owner.get_profile.about %}
+    <a href="/accounts/settings/">write something about you?</a>
+    {% else %}
+    <p class="intro">{{ owner.get_profile.about }}</p>
+    {% endif %}
 </section>
 <section class="tags">
     <h4>tags</h4>

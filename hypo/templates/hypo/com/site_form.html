@@ -1,0 +1,15 @@
+<div class="formrow username">
+    <label>
+        <span class="label">http://{{ request.META.SERVER_NAME }}/site/</span>
+        <input name="username" type="text" value="{{ form.instance.owner.username|default:'' }}" />
+    </label><br />
+    {{ form.username.errors }}
+</div>
+
+<div class="formrow">            
+    <label>
+        <span class="label">Title</span>
+        <input name="title" type="text" value="{{ form.title.value|default:'' }}" />            
+    </label><br />
+    {{ form.title.errors }}
+</div>

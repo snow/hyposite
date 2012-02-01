@@ -3,48 +3,19 @@
 {% block page_class %}pg-signup{% endblock %}
 
 {% block sec_m %}
-<form id="signupform" action="" method="POST">
+<form id="signup_form" action="" method="POST">
     <h1>Signup</h1>
     
     {{ form.non_field_errors }}
     
     <fieldset>
         <legend>Your site</legend>
-        <div class="formrow username">
-            <label>
-                <span class="label">http://{{ request.META.SERVER_NAME }}/site/</span>
-                <input name="username" type="text" value="{{ form.username.value|default:'' }}" />
-            </label><br />
-            {{ form.username.errors }}
-        </div>
-        
-        <div class="formrow">            
-            <label>
-                <span class="label">Title</span>
-                <input name="title" type="text" value="{{ form.title.value|default:'' }}" />            
-            </label><br />
-            {{ form.email.errors }}
-        </div>
+        {% include 'hypo/com/site_form.html' %}
     </fieldset>
     
     <fieldset>
         <legend>About You</legend>
-        <div class="formrow">            
-            <label>
-                <span class="label">Email</span>
-                <input name="email" type="email" value="{{ form.email.value|default:'' }}" />            
-            </label>
-            <span class="help">optional</span><br />
-            {{ form.email.errors }}
-        </div>
-        
-        <div class="formrow fullnamerow">
-            <label>
-                <span class="label">Full name</span>
-                <input name="fullname" type="text" value="{{ form.fullname.value|default:'' }}" />
-            </label>
-            <span class="help">optional</span>
-        </div>
+        {% include 'hypo/com/account_form.html' with is_signup=1 %}
     </fieldset>
     
     {% csrf_token %}

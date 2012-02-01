@@ -1,0 +1,28 @@
+<div class="formrow">            
+    <label>
+        <span class="label">Email</span>
+        <input name="email" type="email" value="{{ form.instance.user.email|default:'' }}" />            
+    </label>
+    <span class="help">optional</span><br />
+    {{ form.email.errors }}
+</div>
+
+<div class="formrow">
+    <label>
+        <span class="label">Fullname</span>
+        <input name="fullname" type="text" value="{{ form.fullname.value|default:'' }}" />
+    </label>
+    <span class="help">optional</span>
+    {{ form.fullname.errors }}
+</div>
+
+{% if not is_signup %}
+<div class="formrow">
+    <label>
+        <span class="label">About you</span>
+        <textarea name="about">{{ form.about.value|default:'' }}</textarea>
+    </label>
+    <span class="help">optional</span>
+    {{ form.about.errors }}
+</div>
+{% endif %}

@@ -1,0 +1,26 @@
+{% extends 'hypo/layout/row-hbf_col-mr.html' %}
+{% block page_class %}pg-site_settings{% endblock %}
+
+{% block sec_m %}
+<form id="site_form" action="" method="POST">
+    <h1>Site Settings</h1>
+    
+    {{ form.non_field_errors }}
+    {{ form.errors }}
+    
+    {% include 'hypo/com/site_form.html' %}
+    
+    {% csrf_token %}
+    
+    <div class="formrow">
+        <button type="submit">OK</button>
+    </div>
+</form>    
+{% endblock %}
+
+{% block sec_r %}
+{% include 'hypo/com/settings_nav.html' with cur='site' %}
+{% endblock %}
+
+{% block layout_extra %}
+{% endblock %}

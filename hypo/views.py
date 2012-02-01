@@ -51,7 +51,7 @@ class DashboardV(gv.ListView):
 
 class SignupV(gv.CreateView):
     ''''''
-    form_class = hypo.UserForm
+    form_class = hypo.SignupForm
     template_name = 'hypo/pg/signup.html'
     success_url = '/dashboard/'
     
@@ -160,3 +160,21 @@ class SiteV(gv.DetailView):
         context['site'] = hypo.Site.objects.get(owner=self.object)
         
         return context
+    
+    
+class AccountSettingsV(gv.UpdateView):
+    form_class = hypo.UserForm
+    template_name = 'hypo/pg/account_settings.html'
+    success_url = '/dashboard/'
+    
+    def get_object(self):
+        return self.request.user.get_profile()
+    
+    
+class SiteSettingsV(gv.UpdateView):
+    form_class = hypo.SiteForm
+    template_name = 'hypo/pg/site_settings.html'
+    success_url = '/dashboard/'
+    
+    def get_object(self):
+        return hypo.Site.objects.get(owner=self.request.user)    

@@ -1,4 +1,5 @@
 import cgi
+import hashlib
 
 from django.db import models
 from django.db.models.signals import post_save
@@ -17,7 +18,7 @@ class UserProfile(models.Model):
     other models associate with user by django.contrib.auth.models.User
     '''
     user = models.ForeignKey(User, unique=True)
-    fullname = models.TextField(max_length=255)
+    fullname = models.CharField(max_length=255)
     about = models.TextField()
     avatar_uri = models.URLField()
     
@@ -26,6 +27,10 @@ class UserProfile(models.Model):
             self.fullname = self.user.username
             
         return super(UserProfile, self).save(*args, **kwargs)
+    
+    def get_gravatar_uri(self):
+        return 'http://www.gravatar.com/avatar/{}?s=120&d=monsterid'.\
+            format(hashlib.md5(self.user.email.strip().lower()).hexdigest())
     
 @receiver(post_save, sender=User, 
           dispatch_uid='hypo.models.create_user_profile')
@@ -50,12 +55,46 @@ class Site(models.Model):
 
 class UserForm(forms.ModelForm):
     ''''''
+    email = forms.EmailField()
+    
+    class Meta:
+        model = UserProfile
+        fields = ('fullname', 'about')
+        
+    def save(self, *args, **kwargs):
+        profile = super(UserForm, self).save(*args, **kwargs)
+        if profile:
+            user = profile.user
+            user.email = self.cleaned_data['email']
+            user.save()
+            
+        return profile
+        
+class SiteForm(forms.ModelForm):
+    ''''''
+    username = forms.CharField(max_length=30)
+    
+    class Meta:
+        model = Site
+        exclude = ('owner',)
+        
+    def save(self, *args, **kwargs):
+        site = super(SiteForm, self).save(*args, **kwargs)
+        if site:
+            user = site.owner
+            user.username = self.cleaned_data['username']
+            user.save()
+            
+        return site
+        
+class SignupForm(forms.ModelForm):
+    ''''''
     fullname = forms.CharField(max_length=255)
     title = forms.CharField(max_length=255)
     
     class Meta:
         model = User
-        exclude = ('password', 'last_login', 'date_joined')
+        exclude = ('password', 'last_login', 'date_joined')                
         
         
 class Post(models.Model):

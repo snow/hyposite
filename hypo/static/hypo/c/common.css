@@ -101,12 +101,19 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
 /*
  * right sidebar
  */
+.sec-r {padding-top:10px}
 .sec-r h3 {margin:0.5em 0; color:#666; font-size:1.8em}
 .sec-r h3:before {content:'> '; color:#999}
 
 .sec-r h4 {margin-bottom:0.5em}
 
 .sec-r>section {margin-bottom:30px}
+
+.sec-r nav a,
+.sec-r nav span {display:block; font-size:1.2em}
+
+.sec-r nav a {text-decoration:none}
+.sec-r nav a:hover {text-decoration:underline}
 
 /*
  * messages
@@ -117,7 +124,9 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
 /*
  * post list
  */
-h1.site_name {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid #999}
+h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid #999}
+    h1.site_title sup {display:none; margin-left:0.5em}
+        h1.site_title:hover sup {display:inline}
 .post_list article {margin-bottom:30px}
 .post_list article .content {white-space:pre-wrap}
 .post_list article .content figure {white-space:normal}
@@ -134,6 +143,7 @@ h1.site_name {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid 
 /*
  * author
  */
+.sec-r .author {margin-top:20px}
 .sec-r .author img {margin-left:-11px}
 
 /*

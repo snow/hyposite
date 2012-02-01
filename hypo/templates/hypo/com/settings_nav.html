@@ -1,0 +1,19 @@
+<nav class="settings">
+    {% if 'account' == cur %}
+    <span class="cur">Account</span>
+    {% else %}
+    <a href="/accounts/settings/">Account</a>
+    {% endif %}
+    
+    {% if 'site' == cur %}
+    <span class="cur">Site</span>
+    {% else %}
+    <a href="/site/settings/">Site</a>
+    {% endif %}
+    
+    {% if 'thirdparty' == cur %}
+    <span class="cur">Thirdparty</span>
+    {% else %}
+    <a href="/thirdparty/">Thirdparty</a>
+    {% endif %}
+</nav>

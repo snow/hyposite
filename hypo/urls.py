@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     
     
     url(r'^site/demo/$', v.DemoV.as_view()),
-    #url(r'^site/create/', login_required(v.SiteCreateV.as_view())),
+    url(r'^site/settings/', login_required(v.SiteSettingsV.as_view())),
     url(r'^site/(?P<slug>.+)/$', v.SiteV.as_view()),
     
     url(r'^dashboard/$', login_required(v.DashboardV.as_view())),
@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     url(r'^thirdparty/', include('hypo.thirdparty.urls')),
     
     url(r'^accounts/signup/', v.SignupV.as_view()),
-    
+    url(r'^accounts/settings/$', login_required(v.AccountSettingsV.as_view())),
     
     url(r'^under_construction/$', v.UnderConstructionV.as_view()),
     
