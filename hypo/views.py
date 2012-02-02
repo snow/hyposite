@@ -41,6 +41,10 @@ class DashboardV(gv.ListView):
         return hypo.Post.objects.filter(author=self.request.user).\
                                  order_by('-updated')
                                  
+    def get(self, request, *args, **kwargs):
+        '''dev only'''
+        return HttpResponseRedirect('/site/{}/'.format(request.user.username))
+                                 
 #    def get(self, request, *args, **kwargs):
 #        try:
 #            site = hypo.Site.objects.get(owner=request.user)
@@ -139,9 +143,10 @@ class PostCreateV(gv.CreateView):
     success_url = '/dashboard/'
     
     def form_valid(self, form):
-        post = hypo.Post(author=self.request.user,
-                         format=form.cleaned_data['format'])
-        post.modify_content(form.cleaned_data['source'])
+        post = hypo.Post(author=self.request.user, 
+                         title=form.cleaned_data['title'])
+        post.modify_content(form.cleaned_data['content_source'], 
+                            form.cleaned_data['format'])
         post.save()
         
         self.object = post # hack for super methods to work
@@ -158,6 +163,7 @@ class SiteV(gv.DetailView):
     def get_context_data(self, **kwargs):
         context = super(SiteV, self).get_context_data(**kwargs)
         context['site'] = hypo.Site.objects.get(owner=self.object)
+        context['post_list'] = hypo.Post.objects.filter(author=self.object)
         
         return context
     
@@ -177,4 +183,32 @@ class SiteSettingsV(gv.UpdateView):
     success_url = '/dashboard/'
     
     def get_object(self):
-        return hypo.Site.objects.get(owner=self.request.user)    
+        return hypo.Site.objects.get(owner=self.request.user)
+    
+        
+#class LuciferV(gv.View):
+#    '''Evil codes'''
+#    def get(self, request, *args, **kwargs):
+#        fucker = '''<h1>fucker</h1>
+#<p style="font-size:xx-large">this is just a <br />
+#paragraph</p>
+#<p>Lorem Ipsum is<br /> 
+#simply <br />
+#dummy text of the <br />
+#printing <br />
+#and<br /> 
+#typesetting <br />
+#industry. Lorem<br /> 
+#Ipsum has<br /> 
+#been the industry's standard dummy <br />
+#text ever since the 1500s, when an <br />
+#unknown printer took a galley of type and <br />
+#scrambled it to make a type specimen book. <br />
+#It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+#<div>what the fuck</div>
+#    
+#<script>alert('im evil!');</script>'''
+#        
+#        output, summary = hypo.Post.process_html_content_source(fucker) 
+#        
+#        return HttpResponse('<pre>{}</pre>'.format(summary))

@@ -1,13 +1,13 @@
 import cgi
 import hashlib
 
+from BeautifulSoup import BeautifulSoup 
+from pyrcp import struk
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django import forms
-
-from pyrcp import struk
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -70,6 +70,7 @@ class UserForm(forms.ModelForm):
             
         return profile
         
+        
 class SiteForm(forms.ModelForm):
     ''''''
     username = forms.CharField(max_length=30)
@@ -87,6 +88,7 @@ class SiteForm(forms.ModelForm):
             
         return site
         
+        
 class SignupForm(forms.ModelForm):
     ''''''
     fullname = forms.CharField(max_length=255)
@@ -101,58 +103,89 @@ class Post(models.Model):
     '''A Hypo post'''    
     title = models.CharField(max_length=30, blank=True, default='')
     
-    source = models.TextField()
-    output = models.TextField()
+    content_source = models.TextField()
+    content_summary = models.CharField(max_length=140, blank=True, default='')
+    content = models.TextField()
     F_PLAIN = 0
     F_HTML = 1
     F_MARKDOWN = 2
     FORMATS = {
-        F_PLAIN: F_PLAIN, 
-        F_HTML: F_HTML, 
-        F_MARKDOWN: F_MARKDOWN,
+        F_PLAIN: 'plain',
+        F_HTML: 'html',
+        F_MARKDOWN: 'markdown',
     }
     format = models.PositiveSmallIntegerField(choices=FORMATS.items(), 
                                               default=F_PLAIN)
-    summary = models.CharField(max_length=140, blank=True, default='')
+    #link = models.URLField()
     
-    link = models.URLField()
-    
-    T_STATUS = 0
-    T_POST = 1
-    T_LINK = 2
-    T_IMAGE = 3
-    TYPES = {
-        T_STATUS: T_STATUS,
-        T_POST: T_POST,
-        T_LINK: T_LINK,
-        T_IMAGE: T_IMAGE,
-    }
-    type = models.PositiveSmallIntegerField(choices=TYPES.items(), 
-                                            default=T_STATUS)
+#    T_STATUS = 0
+#    T_ARTICLE = 1
+#    T_LINK = 2
+#    T_IMAGE = 3
+#    TYPES = {
+#        T_STATUS: T_STATUS,
+#        T_ARTICLE: T_ARTICLE,
+#        T_LINK: T_LINK,
+#        T_IMAGE: T_IMAGE,
+#    }
+#    type = models.PositiveSmallIntegerField(choices=TYPES.items(), 
+#                                            default=T_STATUS)
     id_str = models.CharField(max_length=255, default='')
     author = models.ForeignKey(User)
     
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     
-    def modify_content(self, source):
-        self.source = source
+    def modify_content(self, source, format):
+        self.content_source = source
+        self.format = format
         
         if self.F_PLAIN == self.format:
-            #self.output = cgi.escape(self.source)
-            self.output = self.source
+            self.content, self.content_summary = \
+                self.process_plain_content_source(source)
+        elif self.F_HTML == self.format:
+            self.content, self.content_summary = \
+                self.process_html_content_source(source)
         else:
             raise NotImplemented()
         
-        self.summary = self.extract_summary(self.output)
-        
-    def determin_type(self):
-        if self.title:
-            pass
+    def get_content_format(self):
+        return self.FORMATS[self.format]
         
     @classmethod
-    def extract_summary(cls, output):
-        return output
+    def process_plain_content_source(cls, source):
+        content = cgi.escape(source)
+        summary = cls.extract_content_summary(content)
+        
+        return (content, summary)
+
+    _ALLOWED_HTML_ATTRS = ['id', 'title', 'dir', 'lang', 'xml:lang', 'href', 
+                           'rel', 'src', 'alt']
+    @classmethod
+    def process_html_content_source(cls, source):   
+        soup = BeautifulSoup(source)
+        
+        for tag in soup.findAll():
+            if 'script' == tag.name:
+                tag.extract()
+            else:
+                for attr in tag.attrs:
+                    if attr[0] not in cls._ALLOWED_HTML_ATTRS:
+                        del tag[attr[0]]
+        
+        summary = cls.extract_content_summary(''.join(soup.findAll(text=True)))
+        
+        content = soup.prettify()
+        return (content, summary)
+    
+    @classmethod
+    def extract_content_summary(cls, content):
+        summary = str(content)
+        
+        if 137 < len(summary):
+            return '{}...'.format('\n'.join(summary[:137].split('\n')[:10]))
+        else:
+            return ''
     
 @receiver(post_save, sender=Post, 
           dispatch_uid='hypo.models.assign_post_id_str')
@@ -165,7 +198,6 @@ def _assign_post_id_str(instance, created, **kwargs):
         
 class PostForm(forms.ModelForm):
     ''''''
-    
     class Meta:
         model = Post
-        fields = ('source', 'format')        
+        fields = ('title', 'content_source', 'format')

@@ -1,7 +1,8 @@
 <div class="formrow username">
     <label>
         <span class="label">http://{{ request.META.SERVER_NAME }}/site/</span>
-        <input name="username" type="text" value="{{ form.instance.owner.username|default:'' }}" />
+        <input name="username" type="text" 
+            value="{% if is_signup %}{{ form.username.value|default:'' }}{% else %}{{ form.instance.owner.username|default:'' }}{% endif %}" />
     </label><br />
     {{ form.username.errors }}
 </div>

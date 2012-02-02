@@ -24,5 +24,6 @@ urlpatterns = patterns('',
     url(r'^under_construction/$', v.UnderConstructionV.as_view()),
     
     # dev
+    #url(r'^lucifer/$', v.LuciferV.as_view()),
     #url(r'^m_r/$', v.M_RV.as_view()),
 )

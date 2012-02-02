@@ -1,15 +1,87 @@
-{% extends 'hypo/layout/row-hbf_col-m.html' %}
+{% extends 'hypo/layout/row-hbf_col-mr.html' %}
 
 {% block page_class %}pg-post_create{% endblock %}
 
 {% block sec_m %}
 <h1>Write Post</h1>
-<form action="" method="POST" >
-    <textarea name="source"></textarea>
+<form id="post_create_form_to_init" class="post_create_form" action="" method="POST" >
+    <div class="wrap">
+        <div class="title formrow">
+            <input name="title" type="text" value="{{ form.title.value|default:'' }}" />
+            <div class="placeholder">Maybe a title?</div>
+        </div>
+        <div class="content formrow">
+            <textarea name="content_source">{{ form.content_source.value|default:'' }}</textarea>
+            <div class="placeholder">What's on your mind?</div>
+        </div>
+    </div>
+    
     <input name="format" type="hidden" value="0" />
     {% csrf_token %}
     <div class="formrow">
         <button type="submit">Post</button>
     </div>
 </form>
+{% endblock %}
+
+{% block sec_r %}
+<section id="format_radio_to_init" class="format">
+    <h3>Content format</h3>
+    <label><input type="radio" name="format" value="0" checked="on" />plain text</label><br />
+    <label><input type="radio" name="format" value="1" />basic html</label><br />
+</section>
+<section class="sync_to">
+    <h3>Sync to</h3>
+    <label><input type="checkbox" value="0" />Douban</label>
+</section>
+{% endblock %}
+
+{% block layout_extra %}
+<script src="{{ STATIC_URL }}hypo/s/jquery.fieldselection.js"></script>
+<script>
+(function($){
+    var j_form = $('#post_create_form_to_init').removeAttr('id');
+        
+    j_form.find('[type="text"], textarea').each(function(idx, el){
+        var j_t = $(el),
+            pl = j_t.closest('.formrow').find('.placeholder');
+            
+        if('' === j_t.val()){
+            j_t.one('keyup', function(evt){
+                pl.hide('fast', function(){
+                    pl.remove();
+                });
+            });
+        } else {
+            pl.remove();
+        }
+    });
+    
+    var j_format_radio = $('#format_radio_to_init').removeAttr('id'),
+        j_format_hidden = j_form.find('[name=format]');
+        
+    j_format_radio.on('change', '[name=format]', function(evt){
+        j_format_hidden.val($(this).val());
+    });
+    
+    var j_textarea = j_form.find('textarea'),
+        last_cur_pos = false;
+        
+    function record_cur_pos(evt){
+        last_cur_pos = j_textarea.getSelection().start;
+    }
+    
+    j_textarea.on('click', record_cur_pos).
+        on('keyup', function(evt){
+            switch(evt.which){
+            case 37:
+            case 38:
+            case 39:
+            case 40:
+                record_cur_pos(evt);
+            break;
+            }
+        });
+})(jQuery);
+</script>
 {% endblock %}
