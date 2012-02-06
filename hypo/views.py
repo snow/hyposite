@@ -31,19 +31,14 @@ class DemoV(gv.TemplateView):
     template_name = 'hypo/pg/demo.html'
 
 
-class DashboardV(gv.ListView):
+class DashboardV(gv.TemplateView):
     ''''''
-    paginate_by = 10
-    model = hypo.Post
     template_name = 'hypo/pg/dashboard.html'
-    
-    def get_queryset(self):
-        return hypo.Post.objects.filter(author=self.request.user).\
-                                 order_by('-updated')
                                  
-    def get(self, request, *args, **kwargs):
-        '''dev only'''
-        return HttpResponseRedirect('/site/{}/'.format(request.user.username))
+#    def get(self, request, *args, **kwargs):
+#        '''dev only'''
+#        site = hypo.Site.objects.get(owner=request.user)
+#        return HttpResponseRedirect('/site/{}/'.format(site.slug))
                                  
 #    def get(self, request, *args, **kwargs):
 #        try:
@@ -63,7 +58,7 @@ class SignupV(gv.CreateView):
         initial = {}
         
         if 'username' in self.request.session:
-            initial['username'] = self.request.session['username']
+            initial['slug'] = self.request.session['username'].replace('.', '_')
             
         if 'fullname' in self.request.session:
             initial['fullname'] = self.request.session['fullname']
@@ -77,7 +72,8 @@ class SignupV(gv.CreateView):
         else:
             account_to_link = self.request.session['account_to_link']
         
-        user = User.objects.create_user(form.cleaned_data['username'], 
+        # use email as username
+        user = User.objects.create_user(form.cleaned_data['email'], 
                                         form.cleaned_data['email'])
         
         self.object = user # hack for super methods to work
@@ -89,7 +85,8 @@ class SignupV(gv.CreateView):
         account_to_link.owner = user
         account_to_link.save()
         
-        site = hypo.Site(owner=user, title=form.cleaned_data['title'])
+        site = hypo.Site(owner=user, slug=form.cleaned_data['slug'], 
+                         title=form.cleaned_data['title'])
         site.save()
         
         # need 'pyfyd.utils.ThirdpartyAuthBack' in 
@@ -136,36 +133,34 @@ class SignupV(gv.CreateView):
 #        else:
 #            return HttpResponseRedirect(self.success_url)
         
-class PostCreateV(gv.CreateView):
-    ''''''
-    form_class = hypo.PostForm
-    template_name = 'hypo/pg/post_create.html'
-    success_url = '/dashboard/'
-    
-    def form_valid(self, form):
-        post = hypo.Post(author=self.request.user, 
-                         title=form.cleaned_data['title'])
-        post.modify_content(form.cleaned_data['content_source'], 
-                            form.cleaned_data['format'])
-        post.save()
-        
-        self.object = post # hack for super methods to work
-        return HttpResponseRedirect(self.success_url)
-    
-    
-class SiteV(gv.DetailView):
-    ''''''
-    model = User
-    slug_field = 'username'
-    context_object_name = 'owner'
-    template_name = 'hypo/pg/post_list.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super(SiteV, self).get_context_data(**kwargs)
-        context['site'] = hypo.Site.objects.get(owner=self.object)
-        context['post_list'] = hypo.Post.objects.filter(author=self.object)
-        
-        return context
+#class PostCreateV(gv.CreateView):
+#    ''''''
+#    form_class = hypo.ArticleForm
+#    template_name = 'hypo/pg/post_create.html'
+#    success_url = '/dashboard/'
+#    
+#    def form_valid(self, form):
+#        post = hypo.Post(author=self.request.user, 
+#                         title=form.cleaned_data['title'])
+#        post.modify_content(form.cleaned_data['content_source'], 
+#                            form.cleaned_data['format'])
+#        post.save()
+#        
+#        self.object = post # hack for super methods to work
+#        return HttpResponseRedirect(self.success_url)
+#    
+#    
+#class SiteV(gv.DetailView):
+#    ''''''
+#    model = hypo.Site
+#    template_name = 'hypo/pg/post_list.html'
+#    
+#    def get_context_data(self, **kwargs):
+#        context = super(SiteV, self).get_context_data(**kwargs)
+#        context['owner'] = self.object.owner
+#        context['post_list'] = hypo.Post.objects.filter(author=self.object)
+#        
+#        return context
     
     
 class AccountSettingsV(gv.UpdateView):
@@ -185,7 +180,21 @@ class SiteSettingsV(gv.UpdateView):
     def get_object(self):
         return hypo.Site.objects.get(owner=self.request.user)
     
-        
+
+#class PhotoStreamV(gv.DetailView):
+#    ''''''
+#    model = User
+#    slug_field = 'username'
+#    context_object_name = 'owner'
+#    template_name = 'hypo/pg/photo_list.html'
+#    
+#    def get_context_data(self, **kwargs):
+#        context = super(PhotoStreamV, self).get_context_data(**kwargs)
+#        context['site'] = hypo.Site.objects.get(owner=self.object)
+#        #context['photo_list'] = hypo.Post.objects.filter(author=self.object)
+#        
+#        return context
+     
 #class LuciferV(gv.View):
 #    '''Evil codes'''
 #    def get(self, request, *args, **kwargs):
