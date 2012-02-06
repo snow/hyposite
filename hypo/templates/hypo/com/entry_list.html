@@ -2,7 +2,8 @@
 <article>
     {% if entry.title %}<h1>{{ entry.title }}</h1>{% endif %}
     {% if entry.summary %}
-    <a class="summary" href="{{ entry.uri }}" target="_blank">{{ entry.summary|safe }}<div class="indicator">&#x21f1;read more</div></a>
+    <a class="summary" href="{{ entry.uri }}" 
+        target="_blank">{{ entry.summary|safe }}<div class="indicator">&#x21f1;read more</div><div class="c"></div></a>
     {% else %}
     <div class="content">{{ entry.text|safe }}</div>
     {% endif %}

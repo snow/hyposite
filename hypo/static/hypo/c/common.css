@@ -152,7 +152,7 @@ h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid
     .entry_list .summary:hover {text-decoration:underline}
         .entry_list .summary:hover .indicator {display:block}
     .entry_list .summary img {float:left; margin:0 5px 5px 0; max-width:180px;}    
-    .entry_list .summary:after {display:block; content:' '; clear:both}  
+    /*.entry_list .summary:after {display:block; content:' '; clear:both}*/  
 
 .entry_list figure {position:relative; float:left; max-width:100%}
     .entry_list figure img {max-width:100%; float:left}
