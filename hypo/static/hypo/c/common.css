@@ -4,6 +4,8 @@
  * ----------------
  */
 .c {clear:both}
+.cf:after {content: '.'; display: block; overflow: hidden; visibility: hidden; 
+    font-size: 0; line-height: 0; width: 0; height: 0}
 .tpl {display:none}
 html, body {height:100%}
 body {overflow-y:scroll}
@@ -14,6 +16,7 @@ body {overflow-y:scroll}
  */
 h3,
 h4 {margin-bottom:0.5em}
+a.off {color:#aaa}
 /*
  * header
  */
@@ -92,7 +95,8 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
 /*
  * main section
  */
-.sec-m {width:600px; padding:10px 50px 0 50px; border-right:1px solid #999}
+.sec-m {width:600px; min-height:500px; padding:10px 50px 0 50px; 
+        border-right:1px solid #999}
 
 .row-bd>.c:last-child {height:80px; width:100%}
 
@@ -115,6 +119,15 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
 .sec-r nav a {text-decoration:none}
 .sec-r nav a:hover {text-decoration:underline}
 
+.sec-r .tag {text-decoration:none; padding:0 1px}
+    .sec-r .tag:hover {text-decoration:underline}
+.sec-r .tag.c1 {font-size:1.2em}
+.sec-r .tag.c2 {font-size:1.6em}
+.sec-r .tag.c3 {font-size:2em}/*
+ * 
+ */
+
+
 /*
  * messages
  */
@@ -126,26 +139,31 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
  */
 h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid #999}
 
-.post_list article {margin-bottom:30px}
+.entry_list article {margin-bottom:30px}
 
-.post_list h1 {font-size:2em}
-.post_list h2 {font-size:1.6em}
-.post_list h3 {font-size:1.2em}
+.entry_list h1 {font-size:2em}
+.entry_list h2 {font-size:1.6em}
+.entry_list h3 {font-size:1.2em}
 
-.post_list .summary,
-.post_list .content.plain {white-space:pre-wrap}
+.entry_list .summary {display:block; color:#222; white-space:pre-wrap; 
+                      text-decoration:none}
+    .entry_list .summary .indicator {display:none; margin-bottom:-1.5em; 
+                                     height:1.5em; line-height:1.5em }
+    .entry_list .summary:hover {text-decoration:underline}
+        .entry_list .summary:hover .indicator {display:block}
+    .entry_list .summary img {float:left; margin:0 5px 5px 0; max-width:180px;}    
+    .entry_list .summary:after {display:block; content:' '; clear:both}  
 
-.post_list .summary {display:block; color:#222; text-decoration:none}
-    .post_list article.on .summary {display:none}
-    .post_list .summary .indicator {display:none; margin-bottom:-1.5em; height:1.5em; line-height:1.5em }
-    .post_list .summary:hover {text-decoration:underline}
-        .post_list .summary:hover .indicator {display:block}
+.entry_list figure {position:relative; float:left; max-width:100%}
+    .entry_list figure img {max-width:100%; float:left}
+    .entry_list figcaption {position:absolute; display:none; bottom:0; left:0; 
+                           width:100%; z-index:1; background:#000; color:#fff; 
+                           opacity:0.8}
+        .entry_list figure:hover figcaption {display:block}
+        .entry_list figcaption .inr {padding:5px; text-align:center}
 
-.post_list .content {display:none}
-.post_list article.on .content,
-.post_list .content.no_summary {display:block}
-
-.post_list .meta {margin-top:20px; padding:2px 0; border-bottom:1px solid #ccc; color:#666}
+.entry_list .meta {margin-top:1.5em; padding:2px 0; border-bottom:1px solid #ccc; 
+                   color:#666}
 /*
  * edit link
  */
@@ -173,11 +191,80 @@ sup.edit {display:none; margin-left:0.5em}
  * forms
  */
 .formrow {line-height:2em}
-.formrow .label {display:inline-block; margin-right:5px; width:10em; text-align:right; vertical-align:baseline}
+.formrow .label {display:inline-block; margin-right:5px; width:10em; 
+                 text-align:right; vertical-align:baseline}
+.formrow .errorlist {margin-left:10em; color:red}
 .formrow .help {margin-left:5px}
 
 .username .help {margin-left:11em}
 
+form .fakeborder {border:1px solid #bbb; padding:5px}
+    form .fakeborder [type=text],
+    form .fakeborder textarea,
+    form .fakeborder [type=password],
+    form .fakeborder [type=email] {width:100%; margin:0; padding:0; border:none}
+/*
+ * upload
+ */
+.sec-r>.upload .selectfile {font-size:1.8em; margin-bottom:5px}
+
+.sec-r>.upload .or {display:block; color:#666; text-align:center}
+.sec-r>.upload ul {color:#666; font-size:1.5em}
+
+.sec-r>.upload .selectfile {text-decoration:none}
+.sec-r>.upload .imgfieldwrap [name=img] {position:absolute; opacity:0}
+.sec-r>.upload .imgfieldwrap:hover .selectfile {text-decoration:underline}
+
+body>.dropzone {position:fixed; top:0; left:0; width:100%; height:100%; 
+                cursor:pointer}
+body>.dropzone .inr {position:absolute; top:0; 
+                     padding:100px; border:10px dashed #999; color:#333;
+                     font-size:6em; vertical-align:middle; text-align:center} 
+body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
+/*
+ * image list
+ */
+.imgctn {float:left; display:inline; margin:0 10px; max-width:180px; 
+            min-height:240px; text-align:center}
+    .imgctn .wrap {position:relative; display:inline-block}
+        .imgctn img {max-width:180px; max-height:180px; 
+                     border:5px solid transparent; cursor:pointer}
+        .imgctn.on img {border-color:#999}
+        .imgctn .mask {position:absolute; display:none; top:0; left:0; width:100%; 
+                          height:100%; background:#000; opacity:0.8}
+            .imgctn.ing .mask,
+            .imgctn.queue .mask,
+            .imgctn.err .mask {display:block}
+            
+            .imgctn .view {position:absolute; display:none; right:10px; top:10px; 
+                           width:40px; height:40px; opacity:0.6;
+                           background:#fff url('/s/common/i/view-40.png')}
+                .imgctn:hover .view {display:block}
+                .imgctn .view:hover {opacity:0.8}
+                
+            .imgctn .retry {display:block; width:100%; height:100%; 
+                                     font-size:2em; text-align:center}
+
+    .imgctn figcaption {color:#999}
+        .imgctn .title,
+        .imgctn .desc,
+        .imgctn .size,
+        .imgctn .status {overflow:hidden}
+        .imgctn .title {height:1.5em; line-height:1.5em; margin:0}
+        .imgctn .file_id {display:none}
+        .imgctn p {margin:0}
+        .imgctn.ing .status {padding-left:18px; 
+            background:url('/s/common/i/loading-16.gif') no-repeat center left}        
+        .imgctn.err .status {padding-left:18px; 
+            background:url('/s/common/i/alert-16.png') no-repeat center left}
+            
+    .imgls .empty {font-size:xx-large; color:#999}
+/*
+ * add new
+ */
+.sec-m .new {font-size:3em; color:#aaa}
+    .sec-m .new a {text-decoration:none}
+        .sec-m .new a:hover {text-decoration:underline}    
 /*
  * page specifics
  * ----------------
@@ -205,11 +292,13 @@ sup.edit {display:none; margin-left:0.5em}
 /*
  * post create
  */
-.post_create_form .wrap {margin-bottom:10px; border:1px solid #bbb; width:598px}
-    .post_create_form [type=text],
-    .post_create_form textarea {border:none; padding:5px; margin:0; width:588px; background:transparent}
-    
-    .post_create_form .title {border-bottom:1px dashed #bbb}
+.article_form .formrow {margin-bottom:20px}
 
-.post_create_form .formrow {position:relative}
-.post_create_form .placeholder {position:absolute; top:2px; left:7px; color:#666; z-index:-1}
+.article_form .title .fakeborder {padding:3px 6px; font-size:1.2em}
+
+.article_form .imgfieldwrap {position:relative; float:right; width:7em; height:24px; overflow:hidden}
+    .article_form .imgfieldwrap [name=img] {margin-left:-5px; opacity:0; cursor:pointer}
+    .article_form .imgfieldwrap a {position:absolute; top:0; left:4px; margin:0; z-index:-1; text-decoration:none}
+        .article_form .imgfieldwrap:hover a {text-decoration:underline}
+        
+    .fakeborder.ckeditor {padding:0}

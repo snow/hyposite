@@ -6,11 +6,19 @@
 <h1>Write Post</h1>
 <form id="post_create_form_to_init" class="post_create_form" action="" method="POST" >
     <div class="wrap">
-        <div class="title formrow">
-            <input name="title" type="text" value="{{ form.title.value|default:'' }}" />
-            <div class="placeholder">Maybe a title?</div>
+        <div class="hd formrow">
+            <div class="titlewrap">
+                <input name="title" type="text" value="{{ form.title.value|default:'' }}" />
+                <div class="placeholder">Maybe a title?</div>
+            </div>
+            <div class="operations">
+                <input id="filefield_to_init" name="img" type="file" 
+                    multiple="multiple" accept="image/*" />
+                <a class="link" href="#">+link</a>
+                <!--<a class="video" href="#">+video</a>-->
+            </div>
         </div>
-        <div class="content formrow">
+        <div class="bd formrow">
             <textarea name="content_source">{{ form.content_source.value|default:'' }}</textarea>
             <div class="placeholder">What's on your mind?</div>
         </div>
@@ -22,6 +30,18 @@
         <button type="submit">Post</button>
     </div>
 </form>
+<script>
+(function($){
+    hypo.imgupload.config({
+        SELECT_FILE_BTN_TXT: '+image'
+    });
+    
+    hypo.imgupload.enhanceform($('#filefield_to_init').removeAttr('id'), {
+        'hide_submit': false
+    });
+    hypo.imgupload.init_dnd();
+})(jQuery);
+</script>
 {% endblock %}
 
 {% block sec_r %}

@@ -1,0 +1,198 @@
+{% extends 'hypo/layout/row-hbf_col-mr.html' %}
+
+{% block page_class %}pg-site{% endblock %}
+ 
+{% block sec_m %}
+<h1 class="site_title">Meow and Grrr by a Stray Cat</h1>
+
+<section class="entry_list">
+    <article>
+        <div class="content plain no_summary">Dreams keep me young
+Only mirrors tell the time</div>
+        <div class="meta">2012-01-31 14:23 <span><a href="tag/fucker/">#fucker</a>, <a href="tag/sucker/">#sucker</a></span></div>
+    </article>
+    
+    <article>
+        <h3>What a Wonderful World</h3>
+        <a class="summary plain" href="articles/2/" target="_blank">I see trees of green, red roses too
+I see them bloom for me and you 
+And I think to myself, what a wonderful world...<div class="indicator">&#x21f1;read more</div></a>
+        <div class="meta">2012-01-31 14:33</div>
+    </article>
+    
+    <article>
+        <div class="content plain no_summary">Winter is coming.</div>
+        <div class="meta">2012-01-31 14:13</div>
+    </article>
+    
+    <article>
+        <h3>What a Wonderful World with Image</h3>
+        <a class="summary plain" href="articles/2/" target="_blank"><img src="{{ STATIC_URL }}hypo/i/demo/Liquid_glass_by_matthileo.jpg" alt="" />I see trees of green, red roses too
+I see them bloom for me and you 
+And I think to myself, what a wonderful world...<div class="indicator">&#x21f1;read more</div></a>
+        <div class="meta">2012-01-31 14:33</div>
+    </article>
+    
+    <article>
+        <div class="thumbs">
+            <a href="images/2/" target="_blank">
+                <figure class="img1 cf">
+                    <img src="{{ STATIC_URL }}hypo/i/demo/Liquid_glass_by_matthileo.jpg" 
+                        class="hl" alt="" />
+                    <figcaption><div class="inr">description to this image</div></figcaption>
+                </figure>
+            </a>
+            <div class="c"></div>
+        </div>
+        
+        <div class="meta">2012-01-31 14:13</div>
+    </article>
+    
+    <article>
+        <div class="thumbs">
+            <a href="images/2/" target="_blank">
+                <figure class="img2 cf">
+                    <img src="{{ STATIC_URL }}hypo/i/demo/Serenity_Enchanted_by_sirpecangum.jpg" 
+                        class="hl" alt="" />
+                    <figcaption><div class="inr">description to this image</div></figcaption>
+                </figure>
+            </a>
+            <a href="images/2/" target="_blank">
+                <figure class="img2 cf">
+                    <img src="{{ STATIC_URL }}hypo/i/demo/vamphuntd.jpg" 
+                        class="hl" alt="" />
+                    <figcaption><div class="inr">description to this image</div></figcaption>
+                </figure>
+            </a>
+            <div class="c"></div>
+        </div>
+        
+        <a class="summary plain" href="images/sets/2/" target="_blank">description to these images<div class="indicator">&#x21f1;read more</div></a>
+        <div class="meta">2012-01-31 14:13</div>
+    </article>
+    
+    <article>
+        <div class="thumbs">
+            <a href="images/2/" target="_blank">
+                <figure class="img3 cf">
+                    <img src="{{ STATIC_URL }}hypo/i/demo/vampire-hunter-d-night.jpg" alt="" />
+                    <figcaption><div class="inr">description to this image</div></figcaption>
+                </figure>
+            </a>
+            <a href="images/2/" target="_blank">
+                <figure class="img3 cf">
+                    <img src="{{ STATIC_URL }}hypo/i/demo/WarCraftArtBig.jpg" alt="" />
+                    <figcaption><div class="inr">description to this image</div></figcaption>
+                </figure>
+            </a>
+            <a href="images/2/" target="_blank">
+                <figure class="img3 cf">
+                    <img src="{{ STATIC_URL }}hypo/i/demo/The_Vampire_Hunter_D_by_Destinyfall_noBorder.jpg" alt="" />
+                    <figcaption><div class="inr">description to this image</div></figcaption>
+                </figure>
+            </a>
+            <div class="c"></div>
+        </div>
+        
+        <a class="summary plain" href="images/sets/2/" target="_blank">description to these images<div class="indicator">&#x21f1;read more</div></a>
+        <div class="meta">2012-01-31 14:13</div>
+    </article>
+    
+</section>
+<script>
+(function($){
+    /*$('.post_list').on('click', '.summary', function(evt){
+        evt.preventDefault();
+        
+        $(this).closest('article').addClass('on');
+    });*/
+   $('.entry_list .thumbs').each(function(idx, el){
+       var j_row = $(el),
+           j_imgs = j_row.find('img');
+       
+       if(1 === j_imgs.length){return;}
+       
+       var row_width = j_row.width();
+       
+       j_imgs.attr('height', '100px');
+   
+       var cur_width = 0;
+       j_imgs.each(function(idx, el){
+           var j_t = $(el);
+           
+           cur_width += $(el).width();
+       });
+       
+       var ratio = row_width / cur_width,
+           target_height = Math.floor(100 * ratio);
+       
+       j_imgs.each(function(idx, el){
+           var j_t = $(el);
+           j_t.attr('height', target_height);
+       });
+   });
+})(jQuery);
+</script>
+{% endblock %}
+
+{% block sec_r %}
+<section class="author">
+    <h2 class="fullname">Snow Hellsing</h2>
+    <p class="intro">Just a stray cat</p>
+</section>
+
+<section class="nav">
+    <nav class="">
+        <a href="">Home</a>
+        <a href="articles">Articles</a>
+        <!--<a href="statuses">Statuses</a>-->
+        <a href="images">Images</a>
+    </nav>
+</section>
+
+<section class="tags">
+    <h4>tags</h4>
+    <a class="tag c0" href="#">bike</a>
+    <a class="tag c3" href="#">beauty</a>
+    <a class="tag c1" href="#">basketball</a>
+    <a class="tag c2" href="#">cat</a>
+    <a class="tag c3" href="#">coding</a>
+    <a class="tag c1" href="#">film</a>
+    <a class="tag c2" href="#">gaming</a>
+    <a class="tag c3" href="#">fighting</a>
+    <a class="tag c0" href="#">bike</a>
+    <a class="tag c1" href="#">beauty</a>
+    <a class="tag c2" href="#">basketball</a>
+    <a class="tag c3" href="#">cat</a>
+    <a class="tag c1" href="#">coding</a>
+    <a class="tag c3" href="#">film</a>
+    <a class="tag c2" href="#">gaming</a>
+    <a class="tag c2" href="#">fighting</a>
+    <a class="tag c3" href="#">bike</a>
+    <a class="tag c1" href="#">beauty</a>
+    <a class="tag c0" href="#">basketball</a>
+    <a class="tag c0" href="#">cat</a>
+    <a class="tag c0" href="#">coding</a>
+    <a class="tag c1" href="#">film</a>
+    <a class="tag c1" href="#">gaming</a>
+    <a class="tag c3" href="#">fighting</a>
+    <a class="tag c2" href="#">bike</a>
+    <a class="tag c2" href="#">beauty</a>
+    <a class="tag c0" href="#">basketball</a>
+    <a class="tag c3" href="#">cat</a>
+    <a class="tag c0" href="#">coding</a>
+    <a class="tag c1" href="#">film</a>
+    <a class="tag c2" href="#">gaming</a>
+    <a class="tag c0" href="#">fighting</a>
+</section>
+
+<section class="">
+    <nav class="">
+        <a href="archive">Archive</a>
+        <a href="rss">RSS</a>
+    </nav>
+</section>
+{% endblock %}
+
+{% block layout_extra %}
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'hypo/layout/row-hbf_col-mr1r2.html' %}
+
+{% block page_class %}pg-image_list{% endblock %}
+ 
+{% block sec_m %}
+<h1 class="site_title">{{ site.title }}{% if owner == user %}<sup class="edit"><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
+<h2>Recent images</h2>
+<div class="imgls">
+    {% if image_list|length %}
+    {% include 'hypo/com/image_list.html' %}
+    {% else %}
+        {% if owner == user %}
+    <p class="empty">Drag images onto this page</p>
+        {% else %}
+    <p class="empty">It's empty</p>
+        {% endif %}
+    {% endif %}
+    <figure class="imgctn tpl">
+        <div class="wrap">
+            <img />
+            <a class="view" href="#"></a>
+            <div class="mask"></div>
+        </div>
+        <figcaption>
+            <p class="desc"></p>
+            <span class="status"></span>
+            <span class="meta tpl"></span>
+        </figcaption>
+    </figure>
+</div>
+{% endblock %}
+
+{% block sec_r1 %}
+    {% if owner == user %}
+<section class="upload">
+    <h3>upload</h3>
+    {% include 'hypo/com/upload_form.html' %}
+</section>
+    {% endif %}
+
+<section class="albums">
+    <a href="#">album 1</a>
+    <a href="#">album 2</a>
+    <a href="#">album 3</a>
+</section>
+{% endblock %}
+
+{% block sec_r2 %}
+<section class="author">
+    <!--<img src="{{ STATIC_URL }}hypo/i/demo/4042398855_83d4b31b2b_z.jpg" 
+         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />-->
+    <!--<img src="{{ owner.get_profile.get_gravatar_uri }}" 
+         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />-->         
+    <h2 class="fullname">{{ owner.get_profile.fullname }}{% if user == owner %}<sup class="edit"><a href="/accounts/settings/">edit</a></sup>{% endif %}</h2>
+    {% if user == owner and '' == owner.get_profile.about %}
+    <a href="/accounts/settings/">write something about you?</a>
+    {% else %}
+    <p class="intro">{{ owner.get_profile.about }}<sup class="edit"><a href="/accounts/settings/">edit</a></sup></p>
+    {% endif %}
+</section>
+
+<section class="tags">
+    <h4>tags</h4>
+    <a class="tag" href="#">bike</a>
+    <a class="tag" href="#">beauty</a>
+    <a class="tag" href="#">basketball</a>
+    <a class="tag" href="#">cat</a>
+    <a class="tag" href="#">coding</a>
+    <a class="tag" href="#">film</a>
+    <a class="tag" href="#">gaming</a>
+    <a class="tag" href="#">fighting</a>
+</section>
+
+<section class="posts">
+    <h4><a href="/site/{{ owner.username }}/">Posts</a></h4>
+</section>
+{% endblock %}
+
+{% block layout_extra %}
+<div class="darkbox">
+    <!--<div class="mask"></div>-->
+    {% block darkbox_hd %}{% endblock %}
+    
+    <div class="bd">
+        <img src="" alt=""/>
+        <a class="prev" href="#"></a>
+        <a class="next" href="#"></a>
+    </div>
+    
+    <footer>
+        <div class="thumbs">
+            <div class="thumb tpl">
+                <img imgid="" src="/s/common/i/loading-31.gif" alt="" width="72px" height="72px"/>
+                <div class="mask"></div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div class="actionbar batch">
+    <div class="stat blk">Selection:&nbsp;<strong class="count">0</strong> / {{ object_list|length }}</div>
+    <div class="sp">-</div>
+    <div class="select">
+        <a class="clear blk" href="#">clear</a>
+        <div class="ext">
+            <a class="all blk" href="#">all</a>
+            <a class="inverse blk" href="#">inverse</a>
+        </div>
+    </div>
+    <div class="sp">|</div>
+    <div class="share">
+        <span class="blk">Share to</span>
+        <div class="ext">
+            <span class="blk">coming soon</span>
+            <!--<a class="twitter blk" href="#">Twitter</a>-->
+        </div>
+    </div>
+    {% if owner == user %}
+    <div class="sp">-</div>
+    <div class="move2album">
+        <span class="blk">Move to album</span>
+        <div class="ext">
+            <span class="blk">coming soon</span>
+            <!--<a class="create_album" href="#">+ Create Album</a>
+            {#% album_list user %#}-->
+        </div>
+    </div>
+    <div class="sp">-</div>    
+    <a class="del blk" href="#">delete</a>
+    {% endif %}
+</div>
+<script>ikr.imgls.init();ikr.darkbox.init();</script>
+{% endblock %}

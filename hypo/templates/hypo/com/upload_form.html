@@ -1,0 +1,23 @@
+<form class="uploadimg" action="/api/img/upload/" method="POST" 
+      enctype="multipart/form-data">
+    <input id="filefield_to_init" name="img" type="file" 
+           multiple="multiple" required="true" accept="image/*" />
+    <p>or just drag images from computer and drop on this page</p>
+    <input name="success_uri" type="hidden" value="{{ request.path }}" /> 
+    {% if album %}
+    <input name="album_id" type="hidden" value="{{ album.id }}" />
+    {% endif %}
+    <button type="submit">upload</button>
+    {% csrf_token %}
+</form>
+
+<script>
+(function($){
+    hypo.imgupload.config({
+        SELECT_FILE_BTN_TXT: 'Select local images'
+    });
+    
+    hypo.imgupload.enhanceform($('#filefield_to_init').removeAttr('id'));
+    hypo.imgupload.init_dnd();
+})(jQuery);
+</script>

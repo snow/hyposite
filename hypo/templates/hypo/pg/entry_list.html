@@ -5,13 +5,15 @@
 {% block sec_m %}
 <h1 class="site_title">{{ site.title }}{% if owner == user %}<sup class="edit"><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
 
-{% if post_list %}
-    {% include 'hypo/com/post_list.html' %}
+<section class="entry_list">
+{% if entry_list %}
+    {% include 'hypo/com/entry_list.html' %}
 {% else %}
     {% if owner == user %}
     <a href="/post/create" style="font-size:xx-large">Write your first post</a>
     {% endif %}
 {% endif %}
+</section>
 {% endblock %}
 
 {% block sec_r %}
@@ -27,6 +29,22 @@
     <p class="intro">{{ owner.get_profile.about }}<sup class="edit"><a href="/accounts/settings/">edit</a></sup></p>
     {% endif %}
 </section>
+<!--
+<section class="tags">
+    <h4>tags</h4>
+    <a class="tag" href="#">bike</a>
+    <a class="tag" href="#">beauty</a>
+    <a class="tag" href="#">basketball</a>
+    <a class="tag" href="#">cat</a>
+    <a class="tag" href="#">coding</a>
+    <a class="tag" href="#">film</a>
+    <a class="tag" href="#">gaming</a>
+    <a class="tag" href="#">fighting</a>
+</section>
+
+<section class="photos">
+    <h4><a href="/site/{{ owner.username }}/photos/">photos</a></h4>
+</section>-->
 {% endblock %}
 
 {% block layout_extra %}

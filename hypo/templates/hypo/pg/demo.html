@@ -1,4 +1,4 @@
-{% extends 'hypo/layout/row-hbf_col-mr.html' %}
+{% extends 'hypo/layout/row-hbf_col-mr1r2.html' %}
 
 {% block page_class %}pg-site{% endblock %}
  
@@ -96,13 +96,7 @@ Oh yeah!</div>
 </section>
 {% endblock %}
 
-{% block sec_r %}
-<section class="author">
-    <img src="{{ STATIC_URL }}hypo/i/demo/4042398855_83d4b31b2b_z.jpg" 
-         alt="snow hellsing" width="260px" />
-    <h2 class="fullname">Snow Hellsing</h2>
-    <p class="intro">Just a stray cat</p>
-</section>
+{% block sec_r1 %}
 <section class="tags">
     <h4>tags</h4>
     <a class="tag" href="#">bike</a>
@@ -114,19 +108,30 @@ Oh yeah!</div>
     <a class="tag" href="#">gaming</a>
     <a class="tag" href="#">fighting</a>
 </section>
-<section class="photos">
-    <h4><a href="#">photos</a></h4>
-</section>
+
 <section class="archive">
     <h4>archive</h4>
-    <a href="#">2012-1</a>
-    <a href="#">2011-12</a>
-    <a href="#">2011-11</a>
-    <a href="#">2011-10</a>
-    <a href="#">2011-9</a>
-    <a href="#">2011-8</a>
-    <a href="#">2011-7</a>
-    <a href="#">2011-6</a>
+    <a href="#">2012-1</a><br />
+    <a href="#">2011-12</a><br />
+    <a href="#">2011-11</a><br />
+    <a href="#">2011-10</a><br />
+    <a href="#">2011-9</a><br />
+    <a href="#">2011-8</a><br />
+    <a href="#">2011-7</a><br />
+    <a href="#">2011-6</a><br />
+</section>
+{% endblock %}
+
+{% block sec_r2 %}
+<section class="author">
+    <img src="{{ STATIC_URL }}hypo/i/demo/4042398855_83d4b31b2b_z.jpg" 
+         alt="snow hellsing" width="260px" />
+    <h2 class="fullname">Snow Hellsing</h2>
+    <p class="intro">Just a stray cat</p>
+</section>
+
+<section class="photos">
+    <h4><a href="#">photos</a></h4>
 </section>
 {% endblock %}
 

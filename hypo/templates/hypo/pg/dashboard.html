@@ -3,7 +3,12 @@
 {% block page_class %}pg-dashbard{% endblock %}
  
 {% block sec_m %}
-{% include 'hypo/com/post_list.html' %}
+<nav class="new">+
+    <!--<a class="" href="#">Status</a> |-->
+    <a href="/articles/create/">Article</a> |     
+    <a class="off" href="/image/create/">Image</a> | 
+    <a class="off" href="/link/create/">Link</a>
+</nav>
 {% endblock %}
 
 {% block sec_r %}

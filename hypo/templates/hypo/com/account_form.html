@@ -1,9 +1,8 @@
 <div class="formrow">            
     <label>
         <span class="label">Email</span>
-        <input name="email" type="email" value="{{ form.instance.user.email|default:'' }}" />            
-    </label>
-    <span class="help">optional</span><br />
+        <input name="email" type="email" required="true" value="{{ form.instance.user.email|default:'' }}" />            
+    </label><br />
     {{ form.email.errors }}
 </div>
 

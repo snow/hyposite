@@ -1,16 +1,16 @@
-<div class="formrow username">
+<div class="formrow slug">
     <label>
         <span class="label">http://{{ request.META.SERVER_NAME }}/site/</span>
-        <input name="username" type="text" 
-            value="{% if is_signup %}{{ form.username.value|default:'' }}{% else %}{{ form.instance.owner.username|default:'' }}{% endif %}" />
+        <input name="slug" type="text" required="true"
+            value="{% if is_signup %}{{ form.slug.value|default:'' }}{% else %}{{ form.instance.owner.username|default:'' }}{% endif %}" />
     </label><br />
-    {{ form.username.errors }}
+    {{ form.slug.errors }}
 </div>
 
 <div class="formrow">            
     <label>
         <span class="label">Title</span>
-        <input name="title" type="text" value="{{ form.title.value|default:'' }}" />            
+        <input name="title" type="text" required="true" value="{{ form.title.value|default:'' }}" />            
     </label><br />
     {{ form.title.errors }}
 </div>
