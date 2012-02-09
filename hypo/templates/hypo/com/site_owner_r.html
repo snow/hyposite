@@ -1,0 +1,12 @@
+<section class="author">
+    <!--<img src="{{ STATIC_URL }}hypo/i/demo/4042398855_83d4b31b2b_z.jpg" 
+         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />-->
+    <!--<img src="{{ owner.get_profile.get_gravatar_uri }}" 
+         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />-->         
+    <h2 class="fullname">{{ owner.get_profile.fullname }}{% if user == owner %}<sup class="edit"><a href="/accounts/settings/">edit</a></sup>{% endif %}</h2>
+    {% if user == owner and '' == owner.get_profile.about %}
+    <a href="/accounts/settings/">write something about you?</a>
+    {% else %}
+    <p class="about">{{ owner.get_profile.about }}<sup class="edit"><a href="/accounts/settings/">edit</a></sup></p>
+    {% endif %}
+</section>

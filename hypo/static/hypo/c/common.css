@@ -139,7 +139,7 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
  */
 h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid #999}
 
-.entry_list article {margin-bottom:30px}
+.entry_list .entry {margin-bottom:30px}
 
 .entry_list h1 {font-size:2em}
 .entry_list h2 {font-size:1.6em}
@@ -203,6 +203,21 @@ form .fakeborder {border:1px solid #bbb; padding:5px}
     form .fakeborder textarea,
     form .fakeborder [type=password],
     form .fakeborder [type=email] {width:100%; margin:0; padding:0; border:none}
+
+.imgfieldwrap {position:relative; overflow:hidden}    
+    .imgfieldwrap .selectfile {position:absolute; top:0; left:0; 
+                               text-decoration:none; z-index:-1}
+    .imgfieldwrap [name=img] {opacity:0}
+    .imgfieldwrap:hover .selectfile {text-decoration:underline}    
+    
+.phctn {position:relative}
+label:has(.placeholder) {font-weight:normal}
+.phctn .placeholder {position:absolute; font-weight:normal; line-height:1.2em;
+                     color:#999; z-index:-1}
+.phctn [type=text],
+.phctn [type=password],
+.phctn [type=email],
+.phctn textarea {background:transparent}                
 /*
  * upload
  */
@@ -224,47 +239,40 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * image list
  */
-.imgctn {float:left; display:inline; margin:0 10px; max-width:180px; 
-            min-height:240px; text-align:center}
-    .imgctn .wrap {position:relative; display:inline-block}
-        .imgctn img {max-width:180px; max-height:180px; 
-                     border:5px solid transparent; cursor:pointer}
-        .imgctn.on img {border-color:#999}
-        .imgctn .mask {position:absolute; display:none; top:0; left:0; width:100%; 
-                          height:100%; background:#000; opacity:0.8}
-            .imgctn.ing .mask,
-            .imgctn.queue .mask,
-            .imgctn.err .mask {display:block}
-            
-            .imgctn .view {position:absolute; display:none; right:10px; top:10px; 
-                           width:40px; height:40px; opacity:0.6;
-                           background:#fff url('/s/common/i/view-40.png')}
-                .imgctn:hover .view {display:block}
-                .imgctn .view:hover {opacity:0.8}
-                
-            .imgctn .retry {display:block; width:100%; height:100%; 
-                                     font-size:2em; text-align:center}
 
-    .imgctn figcaption {color:#999}
-        .imgctn .title,
-        .imgctn .desc,
-        .imgctn .size,
-        .imgctn .status {overflow:hidden}
-        .imgctn .title {height:1.5em; line-height:1.5em; margin:0}
-        .imgctn .file_id {display:none}
-        .imgctn p {margin:0}
-        .imgctn.ing .status {padding-left:18px; 
-            background:url('/s/common/i/loading-16.gif') no-repeat center left}        
-        .imgctn.err .status {padding-left:18px; 
-            background:url('/s/common/i/alert-16.png') no-repeat center left}
+.image_container {position:relative; float:left}
+    .image_container img {float:left; border:4px solid transparent; width:192px}
+        .image_container:hover img {border-color:#ccc}
+    
+    .image_container .desc_wrap {position:absolute; display:none; width:100%; 
+                                 bottom:0; background:#000; color:#fff; 
+                                 opacity:0.8}
+        .image_container:hover .desc_wrap {display:block}
+        .image_container .desc {padding:5px; text-align:center; overflow:hidden}
+        
+        .image_container .mask {position:absolute; top:0; left:0; width:100%; 
+                                height:100%; opacity:0.8; z-index:1; 
+                                text-align:center;
+                                background:#000 no-repeat center center;}
+                                
+        .image_container.ing .mask {background-image:url(/s/hypo/i/loading-31.gif)}
+        .image_container.err .mask {color:red; line-height:2em; font-size:2em}
             
-    .imgls .empty {font-size:xx-large; color:#999}
+    .image_list .empty {font-size:xx-large; color:#999; text-align:center}
 /*
  * add new
  */
 .sec-m .new {font-size:3em; color:#aaa}
     .sec-m .new a {text-decoration:none}
-        .sec-m .new a:hover {text-decoration:underline}    
+        .sec-m .new a:hover {text-decoration:underline}
+        
+/*
+ * image set form
+ */
+.image_set_form .imgfieldwrap {width:18em; overflow:hidden}
+.image_set_form .selectfile {font-size:2em}
+.image_set_form .imgfieldwrap [name=img] {font-size:2em}
+.image_set_form [name=description] {height:4em}
 /*
  * page specifics
  * ----------------
@@ -296,9 +304,14 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 
 .article_form .title .fakeborder {padding:3px 6px; font-size:1.2em}
 
-.article_form .imgfieldwrap {position:relative; float:right; width:7em; height:24px; overflow:hidden}
-    .article_form .imgfieldwrap [name=img] {margin-left:-5px; opacity:0; cursor:pointer}
-    .article_form .imgfieldwrap a {position:absolute; top:0; left:4px; margin:0; z-index:-1; text-decoration:none}
-        .article_form .imgfieldwrap:hover a {text-decoration:underline}
+.article_form .imgfieldwrap {float:right; width:7em; height:24px}
         
     .fakeborder.ckeditor {padding:0}
+
+/*
+ * image list
+ */
+.pg-image_list .page_title {float:left}
+.pg-image_list .sec-m .imgfieldwrap {width:14em; float:right}
+.pg-image_list .sec-m .selectfile {font-size:2em}
+.pg-image_list .sec-m .imgfieldwrap [name=img] {font-size:2em}

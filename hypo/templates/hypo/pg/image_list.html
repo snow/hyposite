@@ -1,133 +1,129 @@
-{% extends 'hypo/layout/row-hbf_col-mr1r2.html' %}
+{% extends 'hypo/layout/row-hbf_col-mr.html' %}
 
 {% block page_class %}pg-image_list{% endblock %}
  
 {% block sec_m %}
-<h1 class="site_title">{{ site.title }}{% if owner == user %}<sup class="edit"><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
-<h2>Recent images</h2>
-<div class="imgls">
-    {% if image_list|length %}
-    {% include 'hypo/com/image_list.html' %}
-    {% else %}
-        {% if owner == user %}
-    <p class="empty">Drag images onto this page</p>
-        {% else %}
-    <p class="empty">It's empty</p>
-        {% endif %}
+    <h1 class="site_title">{{ site.title }}{% if owner == user %}<sup class="edit"><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
+    {% if page_title %}
+    <h2 class="page_title">{{ page_title }}</h2>
     {% endif %}
-    <figure class="imgctn tpl">
-        <div class="wrap">
-            <img />
-            <a class="view" href="#"></a>
-            <div class="mask"></div>
-        </div>
-        <figcaption>
-            <p class="desc"></p>
-            <span class="status"></span>
-            <span class="meta tpl"></span>
-        </figcaption>
-    </figure>
-</div>
-{% endblock %}
-
-{% block sec_r1 %}
+    
     {% if owner == user %}
-<section class="upload">
-    <h3>upload</h3>
-    {% include 'hypo/com/upload_form.html' %}
-</section>
+    <form class="upload_image_form" action="/images/upload/" method="POST" 
+          enctype="application/x-www-form-urlencoded">
+        <div class="status"></div>
+        <input id="filefield_to_init" name="img" type="file" multiple="multiple" accept="image/*" />
+        <div class="c"></div>
+    </form>
+    <script>
+    (function($){
+        var j_field = $('#filefield_to_init').removeAttr('id');
+       
+        rcp.filefield.field2link(j_field, {
+            link_text: 'upload images'
+        });
+        
+        rcp.filefield.ajaxify(j_field, {
+            upload_uri: '/images/upload_raw/',
+        });
+        
+        rcp.j_doc.on(rcp.filefield.E_QUEUE_ADDED, function(evt, job){
+            job.params = {
+                filename: job.file.name
+            }
+        });
+    })(jQuery);
+    </script>
     {% endif %}
-
-<section class="albums">
-    <a href="#">album 1</a>
-    <a href="#">album 2</a>
-    <a href="#">album 3</a>
-</section>
+    
+    <div class="c"></div>
+    
+    <div id="imgls2init" class="image_list masonry">
+        {% for img in image_list %}
+            {% include 'hypo/com/image_container.html' %}
+        {% empty %}
+            {% if owner == user %}
+        <p class="empty">Drag images onto this page</p>
+            {% else %}
+        <p class="empty">It's empty</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    <script id="image_container_tpl" type="text/template">
+        {% include 'hypo/com/image_container.html' %}
+    </script>
+    
+    <script>
+(function($){
+    var j_imgls = $('#imgls2init').removeAttr('id'),
+        j_imgctn_tpl = $($('#image_container_tpl').remove().text()),
+        
+        masonry = false;
+        
+    if(j_imgls.hasClass('masonry')){
+        masonry = true;
+    }
+    
+    if(masonry){
+        j_imgls.masonry({
+            itemSelector: '.image_container',
+            //columnWidth: 200
+        });
+    }
+    
+    var masonry_reload_timeout = false;
+        
+    rcp.j_doc.on(rcp.filefield.E_QUEUE_ADDED, function(evt, job){
+        var j_t = j_imgctn_tpl.clone(),
+            j_img = j_t.find('img');
+        
+        j_t.attr('job_id', job.id).addClass('ing');
+        j_img.attr('src', job.data_url);
+        j_t.find('.desc').text(job.file.name);
+        j_t.append($('<div class="mask" />'));
+        
+        if(masonry){
+            j_img.one('load', function(){
+                j_imgls.masonry('reload');
+            });
+        }
+        
+        j_imgls.prepend(j_t);
+    });
+    
+    rcp.j_doc.on(rcp.filefield.E_UPLOAD_DONE, function(evt, job, resp){
+        var j_t = j_imgls.find('[job_id={}]'.replace('{}', job.id));
+        
+        j_t.removeAttr('job_id').removeClass('ing');
+        j_t.find('.mask').remove();
+        j_t.attr('href', resp.uri);
+        j_t.find('img').attr('src', resp.uri_s);
+    });
+    
+    rcp.j_doc.on(rcp.filefield.E_UPLOAD_FAILED, 
+                 function(evt, job, xhr, textStatus, errorThrown){
+        var j_t = j_imgls.find('[job_id={}]'.replace('{}', job.id));
+        
+        j_t.removeAttr('job_id').removeClass('ing').addClass('err');
+        j_t.find('.mask').text('failed');
+        j_t.on('click', function(evt){
+            j_t.hide('fast', function(evt){
+                j_t.remove();
+                if(masonry){
+                    j_imgls.masonry('reload');
+                }
+            });
+        });
+    });
+})(jQuery);
+    </script>
 {% endblock %}
 
-{% block sec_r2 %}
-<section class="author">
-    <!--<img src="{{ STATIC_URL }}hypo/i/demo/4042398855_83d4b31b2b_z.jpg" 
-         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />-->
-    <!--<img src="{{ owner.get_profile.get_gravatar_uri }}" 
-         alt="{{ owner.get_profile.fullname }}" style="max-width:260px" />-->         
-    <h2 class="fullname">{{ owner.get_profile.fullname }}{% if user == owner %}<sup class="edit"><a href="/accounts/settings/">edit</a></sup>{% endif %}</h2>
-    {% if user == owner and '' == owner.get_profile.about %}
-    <a href="/accounts/settings/">write something about you?</a>
-    {% else %}
-    <p class="intro">{{ owner.get_profile.about }}<sup class="edit"><a href="/accounts/settings/">edit</a></sup></p>
-    {% endif %}
-</section>
-
-<section class="tags">
-    <h4>tags</h4>
-    <a class="tag" href="#">bike</a>
-    <a class="tag" href="#">beauty</a>
-    <a class="tag" href="#">basketball</a>
-    <a class="tag" href="#">cat</a>
-    <a class="tag" href="#">coding</a>
-    <a class="tag" href="#">film</a>
-    <a class="tag" href="#">gaming</a>
-    <a class="tag" href="#">fighting</a>
-</section>
-
-<section class="posts">
-    <h4><a href="/site/{{ owner.username }}/">Posts</a></h4>
-</section>
+{% block sec_r %}
+    {% include 'hypo/com/site_owner_r.html' %}
+    {% include 'hypo/com/site_nav_r.html' with cur='images' %}
 {% endblock %}
 
 {% block layout_extra %}
-<div class="darkbox">
-    <!--<div class="mask"></div>-->
-    {% block darkbox_hd %}{% endblock %}
-    
-    <div class="bd">
-        <img src="" alt=""/>
-        <a class="prev" href="#"></a>
-        <a class="next" href="#"></a>
-    </div>
-    
-    <footer>
-        <div class="thumbs">
-            <div class="thumb tpl">
-                <img imgid="" src="/s/common/i/loading-31.gif" alt="" width="72px" height="72px"/>
-                <div class="mask"></div>
-            </div>
-        </div>
-    </footer>
-</div>
-
-<div class="actionbar batch">
-    <div class="stat blk">Selection:&nbsp;<strong class="count">0</strong> / {{ object_list|length }}</div>
-    <div class="sp">-</div>
-    <div class="select">
-        <a class="clear blk" href="#">clear</a>
-        <div class="ext">
-            <a class="all blk" href="#">all</a>
-            <a class="inverse blk" href="#">inverse</a>
-        </div>
-    </div>
-    <div class="sp">|</div>
-    <div class="share">
-        <span class="blk">Share to</span>
-        <div class="ext">
-            <span class="blk">coming soon</span>
-            <!--<a class="twitter blk" href="#">Twitter</a>-->
-        </div>
-    </div>
-    {% if owner == user %}
-    <div class="sp">-</div>
-    <div class="move2album">
-        <span class="blk">Move to album</span>
-        <div class="ext">
-            <span class="blk">coming soon</span>
-            <!--<a class="create_album" href="#">+ Create Album</a>
-            {#% album_list user %#}-->
-        </div>
-    </div>
-    <div class="sp">-</div>    
-    <a class="del blk" href="#">delete</a>
-    {% endif %}
-</div>
-<script>ikr.imgls.init();ikr.darkbox.init();</script>
 {% endblock %}

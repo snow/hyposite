@@ -15,13 +15,15 @@ urlpatterns = patterns('',
     #url(r'^post/create/$', login_required(v.PostCreateV.as_view())),
     #url(r'^post/create\.(?P<format>html|json)$', login_required(v.PostCreateV.as_view())),
     
-    url(r'^site/(?P<site_slug>[^/]+)/$', include('hypo.entry.urls')),
+    url(r'^site/(?P<site_slug>[^/]+)/$', include('hypo.post.urls')),
+    url(r'^site/(?P<site_slug>[^/]+)/posts/', include('hypo.post.urls')),
+    url(r'^posts/', include('hypo.post.urls')),
     
-    url(r'^site/(?P<slug>[^/]+)/articles/', include('hypo.article.urls')),
-    url(r'^articles/', include('hypo.article.urls')),
+#    url(r'^site/(?P<site_slug>[^/]+)/image_sets/', include('hypo.imgset.urls')),
+#    url(r'^image_sets/', include('hypo.imgset.urls')),
     
-    url(r'^site/(?P<slug>[^/]+)/images/', include('hypo.img.urls')),
-    url(r'^img/', include('hypo.img.urls')),
+    url(r'^site/(?P<site_slug>[^/]+)/images/', include('hypo.img.urls')),
+    url(r'^images/', include('hypo.img.urls')),
     #url(r'^album/', include('hypo.album.urls')),
     
     url(r'^thirdparty/', include('hypo.thirdparty.urls')),

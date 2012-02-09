@@ -43,9 +43,13 @@ class UserProfile(models.Model):
     def get_gravatar_uri(self):
         return 'http://www.gravatar.com/avatar/{}?s=120&d=monsterid'.\
             format(hashlib.md5(self.user.email.strip().lower()).hexdigest())
-            
-    def get_primary_site(self):
+    
+    @property    
+    def primary_site(self):
         return Site.objects.get(owner=self, is_primary=True)
+    
+    def could_post_on(self, site):
+        return self.user == site.owner
     
 @receiver(post_save, sender=User, 
           dispatch_uid='hypo.models.create_user_profile')
@@ -129,78 +133,87 @@ class SignupForm(forms.ModelForm):
         exclude = ('username', 'password', 'last_login', 'date_joined')         
         
         
-class Entry(models.Model):
-    '''super class of article, image set, status and so on'''
-    id_str = models.CharField(max_length=255, default='')
-    author = models.ForeignKey(User)
-    site = models.ForeignKey(Site)
-    
-    T_ARTICLE = 0
-    T_IMAGE_SET = 1
-    TYPES = {
-        T_ARTICLE: 'article',
-        T_IMAGE_SET: 'image_set'
-    }    
-    type = models.PositiveSmallIntegerField(choices=TYPES.items())
-    
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    
-    def __init__(self, *args, **kwargs):
-        super(Entry, self).__init__(*args, **kwargs)
-        self.__ext_attrs = {}
-    
-    def get_ext_object(self):
-        if self.T_ARTICLE == self.type:
-            return self.article_set.get()
-        else:
-            raise NotImplemented()
-    
-    def get_ext_attr(self, attr, default=None):
-        if attr not in self.__ext_attrs:        
-            ext_object = self.get_ext_object()
-            self.__ext_attrs[attr] = getattr(ext_object, attr, default)
-            
-        return self.__ext_attrs[attr]
-        
-    @property
-    def uri(self):
-        return self.get_ext_attr('uri')
-    
-    @property
-    def title(self):
-        return self.get_ext_attr('title', '')
-    
-    @property
-    def summary(self):
-        return self.get_ext_attr('summary', '')
-    
-    @property
-    def text(self):
-        return self.get_ext_attr('text', '')
-    
+#class Entry(models.Model):
+#    '''super class of article, image set, status and so on'''
+#    id_str = models.CharField(max_length=255, default='')
+#    owner = models.ForeignKey(User)
+#    site = models.ForeignKey(Site)
 #    
-#    def get_imgs(self):
-#        return []
-    
-@receiver(post_save, sender=Entry, 
-          dispatch_uid='hypo.models.assign_entry_id_str')
-def _assign_entry_id_str(instance, created, **kwargs):
-    '''Create empty user profile on user model created'''
-    if created:
-        instance.id_str = struk.int2str(instance.id)
-        instance.save()
+##    T_ARTICLE = 1
+##    T_IMAGE_SET = 2
+##    TYPES = {
+##        T_ARTICLE: 'article',
+##        T_IMAGE_SET: 'image_set'
+##    }    
+##    type = models.PositiveSmallIntegerField(choices=TYPES.items(), null=True)
+#    
+#    created = models.DateTimeField(auto_now_add=True)
+#    updated = models.DateTimeField(auto_now=True)
+#    
+#    source = models.URLField(null=True, blank=True)
+#    
+#    def __init__(self, *args, **kwargs):
+#        super(Entry, self).__init__(*args, **kwargs)
+#        #self.__ext_attrs = {}
+#        self.__sub_object = None
+#    
+#    def __get_sub_object(self):
+#        if not self.__subobject:        
+#            if self.T_ARTICLE == self.type:
+#                self.__sub_object = self.article
+#            elif self.T_IMAGE_SET == self.type:
+#                self.__sub_object = self.imageset
+#            else:
+#                raise NotImplemented()
+#            
+#        return self.__sub_object
+#    
+#    def __get_sub_attr(self, attr, default=None):
+#        return getattr(self.__get_sub_object(), attr, default)
+#        
+#    @property
+#    def uri(self):
+#        return self.__get_sub_attr('uri')
+#    
+#    @property
+#    def title(self):
+#        return self.__get_sub_attr('title', '')
+#    
+#    @property
+#    def summary(self):
+#        return self.__get_sub_attr('summary', '')
+#    
+#    @property
+#    def text(self):
+#        return self.__get_sub_attr('text', '')
+#    
+##    
+##    def get_imgs(self):
+##        return []
+#    
+#@receiver(post_save, sender=Entry, 
+#          dispatch_uid='hypo.models.assign_entry_id_str')
+#def _assign_entry_id_str(instance, created, **kwargs):
+#    '''Create empty user profile on user model created'''
+#    if '' == instance.id_str:
+#        instance.id_str = struk.int2str(instance.id)
+#        instance.save()
         
-class Article(models.Model):
-    '''A Text Article'''    
-    title = models.CharField(max_length=30, blank=True, default='')
-    
-    content_source = models.TextField()
-    content_summary = models.CharField(max_length=140, blank=True, default='')
-    content = models.TextField()
-    
+class Post(models.Model):
+    '''A post may contain title, text content and images'''    
+    id_str = models.CharField(max_length=255)
     slug = models.SlugField(max_length=200)
-    entry = models.ForeignKey(Entry, unique=True)
+    
+    title = models.CharField(max_length=30, blank=True)
+    
+    text_source = models.TextField()
+    text_summary = models.CharField(max_length=140, blank=True)
+    text = models.TextField(blank=True)
+    
+    images = models.ManyToManyField('ImageCopy')
+    
+    owner = models.ForeignKey(User)
+    site = models.ForeignKey(Site)
 #    F_PLAIN = 0str to url
 #    F_HTML = 1
 #    F_MARKDOWN = 2
@@ -247,49 +260,39 @@ class Article(models.Model):
     
     @property
     def uri(self):
-        return '{}articles/{}/{}/'.format(self.entry.site.uri, 
-                                          self.entry.id_str,
-                                          self.slug)
+        return '{}posts/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
     
-    @property
-    def text(self):
-        return self.content
-    
-    @property
-    def summary(self):
-        return self.content_summary
-    
-    @classmethod
-    def create(cls, user, site, content_source, title=''):    
-        try:
-            entry = Entry(author=user, site=site, type=Entry.T_ARTICLE)
-            entry.save()
-            
-            article = cls(entry=entry, title=title, 
-                          content_source=content_source)
-            #article.modify_content(content_source, format)
-            article.save()
-            
-            return article
-        except Exception as err:
-            try:
-                article.delete()
-            except:
-                pass  
-            
-            try:
-                entry.delete()
-            except:
-                pass                
-            
-            raise err
+#    @classmethod
+#    def create(cls, user, site, content_source, title=''):    
+#        try:
+#            entry = Entry(owner=user, site=site, type=Entry.T_ARTICLE)
+#            entry.save()
+#            
+#            article = cls(entry=entry, title=title, 
+#                          content_source=content_source)
+#            #article.modify_content(content_source, format)
+#            article.save()
+#            
+#            return article
+#        except Exception as err:
+#            try:
+#                article.delete()
+#            except:
+#                pass  
+#            
+#            try:
+#                entry.delete()
+#            except:
+#                pass                
+#            
+#            raise err
         
-    @classmethod
-    def process_plain_content_source(cls, source):
-        content = cgi.escape(source)
-        summary = cls.extract_content_summary(content)
-        
-        return (content, summary)
+#    @classmethod
+#    def process_plain_content_source(cls, source):
+#        content = cgi.escape(source)
+#        summary = cls.extract_content_summary(content)
+#        
+#        return (content, summary)
 
     _ALLOWED_HTML_ATTRS = ['id', 'title', 'dir', 'lang', 'xml:lang', 'href', 
                            'rel', 'src', 'alt', 'target']
@@ -320,20 +323,30 @@ class Article(models.Model):
         else:
             return ''
 
-@receiver(pre_save, sender=Article, dispatch_uid='hypo.models.article_pre_save')
-def _article_pre_save(instance, **kwargs):
+@receiver(pre_save, sender=Post, dispatch_uid='hypo.models.post_pre_save')
+def _post_pre_save(instance, **kwargs):
     '''Create empty user profile on user model created'''
-    instance.content, content_plain, instance.content_summary = \
-        Article.process_html_content_source(instance.content_source)
+    instance.text, content_plain, instance.text_summary = \
+        Post.process_html_content_source(instance.content_source)
         
-    instance.slug = instance.title or instance.summary[:20] or content_plain
+    instance.slug = instance.title or \
+                    instance.text_summary[:20] or content_plain
     instance.slug = quote(instance.slug.strip().replace(' ', '_'))
+    
+@receiver(post_save, sender=Post, 
+          dispatch_uid='hypo.models.post_post_save')
+def _post_post_save(instance, created, **kwargs):
+    ''''''
+    if not instance.id_str:
+        instance.id_str = struk.int2str(instance.id)
+        instance.save()
         
-class ArticleForm(forms.ModelForm):
+        
+class PostForm(forms.ModelForm):
     ''''''
     class Meta:
-        model = Article
-        fields = ('title', 'content_source')
+        model = Post
+        fields = ('title', 'text_source')
         
         
 class ImageFile(models.Model):
@@ -356,9 +369,9 @@ class ImageFile(models.Model):
     SIZE_THUMB_SMALL = 'ts'
     
     SIZE_LIMITS = {
-        SIZE_LARGE: (1024, 800),
+        SIZE_LARGE: (2048, 2048),
         SIZE_MEDIAN: (640, 640),
-        SIZE_SMALL: (180, 180),
+        SIZE_SMALL: (200, 200),
         SIZE_THUMB_LARGE: (180, 180),
         SIZE_THUMB_MEDIAN: (120, 120),
         SIZE_THUMB_SMALL: (72, 72),
@@ -533,24 +546,73 @@ class ImageFile(models.Model):
         return imgf
 
 
-class Album(models.Model):
-    '''
-    Album
-    '''
-    title = models.CharField(max_length=255)
-    owner = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now_add=True)
+#class ImageSet(Entry):
+#    '''
+#    Image set
+#    '''
+#    description = models.TextField()
+#    is_temp = models.BooleanField(default=True)
+#    
+#    article = models.ForeignKey(Article, unique=True, null=True, blank=True)
+#    
+#    @property
+#    def title(self):
+#        return self.description[:20]
+#    
+#    @property
+#    def uri(self):
+#        uri = '{}image_sets/{}/'.format(self.site.uri, self.id_str)
+#        if self.title:
+#            uri = '{}{}/'.format(uri, self.title)
+#            
+#        return uri    
+#    
+#    @property
+#    def text(self):
+#        return self.description
+#    
+#    @property
+#    def summary(self):
+#        return self.title 
     
-    source = models.CharField(max_length=255, null=True, blank=True)
-    
-    
+#    @classmethod
+#    def create(cls, user, site, description='', article=None, is_temp=True):    
+#        try:
+#            entry = Entry(owner=user, site=site, type=Entry.T_IMAGE_SET)
+#            entry.save()
+#            
+#            set = cls(description=description, is_temp=is_temp, entry=entry, 
+#                      article=article)
+#            #article.modify_content(content_source, format)
+#            set.save()
+#            
+#            return set
+#        except Exception as err:
+#            try:
+#                set.delete()
+#            except:
+#                pass  
+#            
+#            try:
+#                entry.delete()
+#            except:
+#                pass                
+#            
+#            raise err
 #class Tag(models.Model):
 #    '''
 #    Tag
 #    '''
 #    text = models.CharField(max_length=255, unique=True)
 #    created = models.DateTimeField(auto_now_add=True)
-     
+#@receiver(post_save, sender=ImageSet, 
+#          dispatch_uid='hypo.models.imageset_post_save')
+#def _imageset_post_save(instance, created, **kwargs):
+#    ''''''
+#    if created:
+#        entry = instance.entry_ptr
+#        entry.type = Entry.T_IMAGE_SET
+#        entry.save()
   
 class ImageCopy(models.Model):
     '''
@@ -561,10 +623,11 @@ class ImageCopy(models.Model):
     id_str = models.CharField(max_length=255, unique=True, null=True)
     description = models.CharField(max_length=255)
     # serilzed exif data
-    exif_str = models.TextField(blank=True)
+    exif_str = models.TextField()
     
     owner = models.ForeignKey(User)
-    album = models.ForeignKey(Album, null=True, blank=True)
+    site = models.ForeignKey(Site)
+    #set = models.ForeignKey(ImageSet, null=True, blank=True)
     #tags = models.ManyToManyField(Tag, related_name='images')
     created = models.DateTimeField(auto_now_add=True)
     
@@ -585,80 +648,83 @@ class ImageCopy(models.Model):
     width_ts = property(lambda self: self.file.width_ts)
     height_ts = property(lambda self: self.file.height_ts)
     
-    source = models.CharField(max_length=255, null=True, blank=True)
-    
-    def uri(self, size=ImageFile.SIZE_SMALL):
+    def get_raw_uri(self, size=ImageFile.SIZE_SMALL):
         return self.file.get_uri(size)
     
+    @property
+    def uri(self):
+        return '{}images/{}/'.format(self.site.uri, self.id_str)
+    
+    @property
     def uri_f(self):
-        return self.uri(ImageFile.SIZE_FULL)
+        return self.get_raw_uri(ImageFile.SIZE_FULL)
     
+    @property
     def uri_l(self):
-        return self.uri(ImageFile.SIZE_LARGE)
+        return self.get_raw_uri(ImageFile.SIZE_LARGE)
     
+    @property
     def uri_m(self):
-        return self.uri(ImageFile.SIZE_MEDIAN)
+        return self.get_raw_uri(ImageFile.SIZE_MEDIAN)
     
+    @property
     def uri_s(self):
-        return self.uri(ImageFile.SIZE_SMALL)
+        return self.get_raw_uri(ImageFile.SIZE_SMALL)
     
+    @property
     def uri_tl(self):
-        return self.uri(ImageFile.SIZE_THUMB_LARGE)
+        return self.get_raw_uri(ImageFile.SIZE_THUMB_LARGE)
     
+    @property
     def uri_tm(self):
-        return self.uri(ImageFile.SIZE_THUMB_MEDIAN)
+        return self.get_raw_uri(ImageFile.SIZE_THUMB_MEDIAN)
     
+    @property
     def uri_ts(self):
-        return self.uri(ImageFile.SIZE_THUMB_SMALL)
+        return self.get_raw_uri(ImageFile.SIZE_THUMB_SMALL)
+    
+    @property
+    def exif(self):
+        return json.loads(self.exif_str)
+    
+    @property
+    def dict(self):
+        keys = ['id', 'description', 'exif', 'uri',
+               'uri_f', 'uri_l', 'uri_m', 'uri_s', 'uri_tl', 'uri_tm', 'uri_ts',
+               'width_f', 'height_f', 'width_l', 'height_l', 
+               'width_m', 'height_m', 'width_s', 'height_s',
+               'width_tl', 'height_tl', 'width_tm', 'height_tm',
+               'width_ts', 'height_ts']
         
-    def get_dict(self):
-        return dict(id=self.id,
-                    description=self.description,
-                    exif=json.loads(self.exif_str),
-                
-                    uri_f=self.uri_f(),
-                    uri_l=self.uri_l(),
-                    uri_m=self.uri_m(),
-                    uri_s=self.uri_s(),
-                    uri_tl=self.uri_tl(),
-                    uri_tm=self.uri_tm(),
-                    uri_ts=self.uri_ts(),
-                
-                    width_f=self.width_f,
-                    height_f=self.height_f,
-                    width_l=self.width_l,
-                    height_l=self.height_l,
-                    width_m=self.width_m,
-                    height_m=self.height_m,
-                    width_s=self.width_s,
-                    height_s=self.height_s,
-                    width_tl=self.width_tl,
-                    height_tl=self.height_tl,
-                    width_tm=self.width_tm,
-                    height_tm=self.height_tm,
-                    width_ts=self.width_ts,
-                    height_ts=self.height_ts)
+        _dict = dict()
+        for key in keys:
+            try:
+                _dict[key] = getattr(self, key)
+            except:
+                _dict[key] = None
+        
+        return _dict
         
     @classmethod
-    def from_string(cls, data, user, desc=''):
+    def from_string(cls, data, user, site, desc=''):
         tmp = tempfile.NamedTemporaryFile()
         tmp.write(data)
         tmp.flush()
         return cls.from_filename(tmp.name, user, desc)
     
     @classmethod
-    def from_filename(cls, filename, user, desc=''):
+    def from_filename(cls, filename, user, site, desc=''):
         '''
         Construct an ImageCopy from an filepath
         '''
         return cls.from_file(File(open(filename)), user, desc)
     
     @classmethod
-    def from_file(cls, file, user, desc=''):
+    def from_file(cls, file, user, site, desc=''):
         '''
         Construct an ImageCopy from an uploaded file
         '''
-        img = ImageCopy(owner=user, description=desc)
+        img = ImageCopy(owner=user, site=site, description=desc)
         
         # strip exif from given image
         file.seek(0)
@@ -667,11 +733,12 @@ class ImageCopy(models.Model):
         
         exif_dict = dict()
         for k in exif.exif_keys:
-            try:
-                exif_dict[exif[k].label] = exif[k].human_value.decode('utf-8')
-            except UnicodeDecodeError:
-                # ignore invalid chars
-                pass
+            if exif[k].human_value:
+                try:
+                    exif_dict[exif[k].label] = exif[k].human_value.decode('utf-8')
+                except UnicodeDecodeError:
+                    # ignore invalid chars
+                    pass
             
             del exif[k]
             

@@ -22,12 +22,13 @@
     <script src="{{ STATIC_URL }}hypo/s/jquery-ui-1.8.17.custom.min.js?r=0.1.0"></script>
     <!--<script src="{{ STATIC_URL }}common/s/jquery-ui-1.8.17.custom.min.js"></script>-->
     <script src="{{ STATIC_URL }}hypo/s/jquery.cookie.js"></script>
+    <script src="{{ STATIC_URL }}hypo/s/jquery.masonry.js?r=0.1.0"></script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}common/s/jquery.ba-bbq-1.2.1.min.js"></script>-->
     <!--<script type="text/javascript" src="{{ STATIC_URL }}common/s/fileuploader.js"></script>-->
     <script src="{{ STATIC_URL }}hypo/s/rcp.js?r=0.1.2"></script>
     <script src="{{ STATIC_URL }}hypo/s/rcp.django.js?r=0.1.2"></script>
+    <script src="{{ STATIC_URL }}hypo/s/rcp.filefield.js?r=0.1.0"></script>
     <script src="{{ STATIC_URL }}hypo/s/common.js?r=0.1.0"></script>
-    <script src="{{ STATIC_URL }}hypo/s/imgupload.js?r=0.1.0"></script>
     {% block extra_scripts %}{% endblock %}
 </head>
 
@@ -38,11 +39,12 @@
         <a class="logo" href="/{% if user.is_authenticated %}dashboard/{% endif %}">Hypo</a>
         
         <nav>
-            {% if user.is_authenticated %}
-            <a href="/site/{{ user.get_profile.get_primary_site.slug }}/">Mine</a>
-            <a href="/post/create/">+Post</a>
-            {% endif %}
             <a href="/public/">Explore</a>
+            {% if user.is_authenticated %}
+            <a href="{{ user.get_profile.primary_site.uri }}">Mine</a>
+            <a href="/articles/create/">+Article</a>
+            <a href="/image_sets/create/">+Image</a>
+            {% endif %}
         </nav>
         
         {% if user.is_authenticated %}

@@ -35,10 +35,10 @@ class DashboardV(gv.TemplateView):
     ''''''
     template_name = 'hypo/pg/dashboard.html'
                                  
-#    def get(self, request, *args, **kwargs):
-#        '''dev only'''
-#        site = hypo.Site.objects.get(owner=request.user)
-#        return HttpResponseRedirect('/site/{}/'.format(site.slug))
+    def get(self, request, *args, **kwargs):
+        '''dev only'''
+        #site = hypo.Site.objects.get(owner=request.user)
+        return HttpResponseRedirect(request.user.get_profile().primary_site.uri)
                                  
 #    def get(self, request, *args, **kwargs):
 #        try:

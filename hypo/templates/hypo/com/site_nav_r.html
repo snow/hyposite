@@ -1,0 +1,14 @@
+<section class="site_nav">
+    <nav>
+        {% if 'posts' == cur %}
+        <span class="cur">&gt; Posts</span>
+        {% else %}
+        <a href="{{ site.uri }}">Posts</a>
+        {% endif %}
+        {% if 'images' == cur %}
+        <span class="cur">&gt; Images</span>
+        {% else %}
+        <a href="{{ site.uri }}images/">Images</a>
+        {% endif %}
+    </nav>
+</section>
