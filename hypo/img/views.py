@@ -18,6 +18,7 @@ class StreamV(gv.ListView, SiteVMixin):
     context_object_name = 'image_list'
     
     def get_queryset(self):
+        #site = self.get_site(request=self.request)
         site = self.get_site()
         owner = site.owner
         queryset = hypo.ImageCopy.objects.filter(owner=owner, site=site).\

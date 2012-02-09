@@ -212,6 +212,8 @@ class Post(models.Model):
     
     images = models.ManyToManyField('ImageCopy')
     
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User)
     site = models.ForeignKey(Site)
 #    F_PLAIN = 0str to url
@@ -327,7 +329,7 @@ class Post(models.Model):
 def _post_pre_save(instance, **kwargs):
     '''Create empty user profile on user model created'''
     instance.text, content_plain, instance.text_summary = \
-        Post.process_html_content_source(instance.content_source)
+        Post.process_html_content_source(instance.text_source)
         
     instance.slug = instance.title or \
                     instance.text_summary[:20] or content_plain

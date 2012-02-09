@@ -1,0 +1,39 @@
+{% extends 'hypo/layout/row-hbf_col-mr.html' %}
+
+{% block page_class %}pg-site{% endblock %}
+ 
+{% block sec_m %}
+    <h1 class="site_title">{{ site.title }}{% if owner == user %}<sup class="edit"><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
+    
+    <section class="post_list">
+        {% for post in post_list %}
+            {% include 'hypo/com/post_container.html' %}
+        {% empty %}
+            {% if owner == user %}
+            <a href="/post/create" style="font-size:xx-large">Write your first post</a>
+            {% endif %}
+        {% endfor %}
+    </section>
+{% endblock %}
+
+{% block sec_r %}
+{% include 'hypo/com/site_owner_r.html' %}
+{% include 'hypo/com/site_nav_r.html' with cur='posts' %}
+<!--
+<section class="tags">
+    <h4>tags</h4>
+    <a class="tag" href="#">bike</a>
+    <a class="tag" href="#">beauty</a>
+    <a class="tag" href="#">basketball</a>
+    <a class="tag" href="#">cat</a>
+    <a class="tag" href="#">coding</a>
+    <a class="tag" href="#">film</a>
+    <a class="tag" href="#">gaming</a>
+    <a class="tag" href="#">fighting</a>
+</section>-->
+
+
+{% endblock %}
+
+{% block layout_extra %}
+{% endblock %}

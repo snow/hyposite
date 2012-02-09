@@ -42,8 +42,7 @@
             <a href="/public/">Explore</a>
             {% if user.is_authenticated %}
             <a href="{{ user.get_profile.primary_site.uri }}">Mine</a>
-            <a href="/articles/create/">+Article</a>
-            <a href="/image_sets/create/">+Image</a>
+            <a href="/posts/create/">+Post</a>
             {% endif %}
         </nav>
         

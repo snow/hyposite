@@ -1,0 +1,22 @@
+{{ form.errors }}
+
+<div class="formrow title">
+    <label>Title (optional)
+        <div class="fakeborder">
+            <input name="title" type="text" value="{{ form.title.value|default:'' }}" />
+        </div>
+    </label>
+    {{ form.title.errors }}
+</div>
+    
+<div class="formrow text">
+    <input id="filefield_to_init" name="img" type="file" multiple="multiple" accept="image/*" />
+    <label>Content
+        <div class="fakeborder ckeditor">
+            <textarea class="ckeditor" name="text_source">{{ form.text_source.value|default:'' }}</textarea>
+        </div>
+    </label>
+    {{ form.content_source.errors }}
+</div>
+
+<!--<input name="site" type="hidden" value="{{ form.site.value|default:0 }}" />-->

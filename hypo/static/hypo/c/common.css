@@ -139,30 +139,30 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
  */
 h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid #999}
 
-.entry_list .entry {margin-bottom:30px}
+.post_list .entry {margin-bottom:30px}
 
-.entry_list h1 {font-size:2em}
-.entry_list h2 {font-size:1.6em}
-.entry_list h3 {font-size:1.2em}
+.post_list h1 {font-size:2em}
+.post_list h2 {font-size:1.6em}
+.post_list h3 {font-size:1.2em}
 
-.entry_list .summary {display:block; color:#222; white-space:pre-wrap; 
+.post_list .summary {display:block; color:#222; white-space:pre-wrap; 
                       text-decoration:none}
-    .entry_list .summary .indicator {display:none; margin-bottom:-1.5em; 
+    .post_list .summary .indicator {display:none; margin-bottom:-1.5em; 
                                      height:1.5em; line-height:1.5em }
-    .entry_list .summary:hover {text-decoration:underline}
-        .entry_list .summary:hover .indicator {display:block}
-    .entry_list .summary img {float:left; margin:0 5px 5px 0; max-width:180px;}    
-    /*.entry_list .summary:after {display:block; content:' '; clear:both}*/  
+    .post_list .summary:hover {text-decoration:underline}
+        .post_list .summary:hover .indicator {display:block}
+    .post_list .summary img {float:left; margin:0 5px 5px 0; max-width:180px;}    
+    /*.post_list .summary:after {display:block; content:' '; clear:both}*/  
 
-.entry_list figure {position:relative; float:left; max-width:100%}
-    .entry_list figure img {max-width:100%; float:left}
-    .entry_list figcaption {position:absolute; display:none; bottom:0; left:0; 
+.post_list figure {position:relative; float:left; max-width:100%}
+    .post_list figure img {max-width:100%; float:left}
+    .post_list figcaption {position:absolute; display:none; bottom:0; left:0; 
                            width:100%; z-index:1; background:#000; color:#fff; 
                            opacity:0.8}
-        .entry_list figure:hover figcaption {display:block}
-        .entry_list figcaption .inr {padding:5px; text-align:center}
+        .post_list figure:hover figcaption {display:block}
+        .post_list figcaption .inr {padding:5px; text-align:center}
 
-.entry_list .meta {margin-top:1.5em; padding:2px 0; border-bottom:1px solid #ccc; 
+.post_list .meta {margin-top:1.5em; padding:2px 0; border-bottom:1px solid #ccc; 
                    color:#666}
 /*
  * edit link
@@ -300,11 +300,11 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * post create
  */
-.article_form .formrow {margin-bottom:20px}
+.post_form .formrow {margin-bottom:20px}
 
-.article_form .title .fakeborder {padding:3px 6px; font-size:1.2em}
+.post_form .title .fakeborder {padding:3px 6px; font-size:1.2em}
 
-.article_form .imgfieldwrap {float:right; width:7em; height:24px}
+.post_form .imgfieldwrap {float:right; width:7em; height:24px}
         
     .fakeborder.ckeditor {padding:0}
 

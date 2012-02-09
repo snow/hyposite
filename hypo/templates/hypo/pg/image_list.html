@@ -16,23 +16,23 @@
         <div class="c"></div>
     </form>
     <script>
-    (function($){
-        var j_field = $('#filefield_to_init').removeAttr('id');
-       
-        rcp.filefield.field2link(j_field, {
-            link_text: 'upload images'
-        });
-        
-        rcp.filefield.ajaxify(j_field, {
-            upload_uri: '/images/upload_raw/',
-        });
-        
-        rcp.j_doc.on(rcp.filefield.E_QUEUE_ADDED, function(evt, job){
-            job.params = {
-                filename: job.file.name
-            }
-        });
-    })(jQuery);
+(function($){
+    var j_field = $('#filefield_to_init').removeAttr('id');
+   
+    rcp.filefield.field2link(j_field, {
+        link_text: 'upload images'
+    });
+    
+    rcp.filefield.ajaxify(j_field, {
+        upload_uri: '/images/upload_raw/',
+    });
+    
+    rcp.j_doc.on(rcp.filefield.E_QUEUE_ADDED, function(evt, job){
+        job.params = {
+            filename: job.file.name
+        }
+    });
+})(jQuery);
     </script>
     {% endif %}
     
