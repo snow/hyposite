@@ -264,6 +264,10 @@ class Post(models.Model):
     def uri(self):
         return '{}posts/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
     
+    @property
+    def summary(self):
+        return self.text_summary
+    
 #    @classmethod
 #    def create(cls, user, site, content_source, title=''):    
 #        try:

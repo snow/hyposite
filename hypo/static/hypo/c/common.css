@@ -139,7 +139,7 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
  */
 h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid #999}
 
-.post_list .entry {margin-bottom:30px}
+.post_list .post {margin-bottom:30px}
 
 .post_list h1 {font-size:2em}
 .post_list h2 {font-size:1.6em}
@@ -154,16 +154,34 @@ h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid
     .post_list .summary img {float:left; margin:0 5px 5px 0; max-width:180px;}    
     /*.post_list .summary:after {display:block; content:' '; clear:both}*/  
 
-.post_list figure {position:relative; float:left; max-width:100%}
-    .post_list figure img {max-width:100%; float:left}
-    .post_list figcaption {position:absolute; display:none; bottom:0; left:0; 
-                           width:100%; z-index:1; background:#000; color:#fff; 
-                           opacity:0.8}
-        .post_list figure:hover figcaption {display:block}
-        .post_list figcaption .inr {padding:5px; text-align:center}
-
 .post_list .meta {margin-top:1.5em; padding:2px 0; border-bottom:1px solid #ccc; 
                    color:#666}
+                   
+/*
+ * image list
+ */
+.image_container {position:relative; float:left}
+    .image_container img {float:left; border:4px solid transparent; width:192px}
+        .image_container:hover img {border-color:#ccc}
+    
+    .image_container .desc_wrap {position:absolute; display:none; width:100%; 
+                                 bottom:0; background:#000; color:#fff; 
+                                 opacity:0.8}
+        .image_container:hover .desc_wrap {display:block}
+        .image_container .desc {padding:5px; text-align:center; overflow:hidden}
+        
+        .image_container .mask {position:absolute; top:0; left:0; width:100%; 
+                                height:100%; opacity:0.8; z-index:1; 
+                                text-align:center;
+                                background:#000 no-repeat center center;}
+                                
+        .image_container.ing .mask {background-image:url(/s/hypo/i/loading-31.gif)}
+        .image_container.err .mask {color:red; line-height:2em; font-size:2em}
+   
+.image_list.fix_height .image_container {max-width:100%}
+.image_list.fix_height img {border:none; width:auto; max-width:100%}
+    
+.image_list .empty {font-size:xx-large; color:#999; text-align:center}
 /*
  * edit link
  */
@@ -236,43 +254,7 @@ body>.dropzone .inr {position:absolute; top:0;
                      padding:100px; border:10px dashed #999; color:#333;
                      font-size:6em; vertical-align:middle; text-align:center} 
 body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
-/*
- * image list
- */
 
-.image_container {position:relative; float:left}
-    .image_container img {float:left; border:4px solid transparent; width:192px}
-        .image_container:hover img {border-color:#ccc}
-    
-    .image_container .desc_wrap {position:absolute; display:none; width:100%; 
-                                 bottom:0; background:#000; color:#fff; 
-                                 opacity:0.8}
-        .image_container:hover .desc_wrap {display:block}
-        .image_container .desc {padding:5px; text-align:center; overflow:hidden}
-        
-        .image_container .mask {position:absolute; top:0; left:0; width:100%; 
-                                height:100%; opacity:0.8; z-index:1; 
-                                text-align:center;
-                                background:#000 no-repeat center center;}
-                                
-        .image_container.ing .mask {background-image:url(/s/hypo/i/loading-31.gif)}
-        .image_container.err .mask {color:red; line-height:2em; font-size:2em}
-            
-    .image_list .empty {font-size:xx-large; color:#999; text-align:center}
-/*
- * add new
- */
-.sec-m .new {font-size:3em; color:#aaa}
-    .sec-m .new a {text-decoration:none}
-        .sec-m .new a:hover {text-decoration:underline}
-        
-/*
- * image set form
- */
-.image_set_form .imgfieldwrap {width:18em; overflow:hidden}
-.image_set_form .selectfile {font-size:2em}
-.image_set_form .imgfieldwrap [name=img] {font-size:2em}
-.image_set_form [name=description] {height:4em}
 /*
  * page specifics
  * ----------------

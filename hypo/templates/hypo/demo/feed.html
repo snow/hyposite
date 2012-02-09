@@ -5,14 +5,14 @@
 {% block sec_m %}
 <h1 class="site_title">Meow and Grrr by a Stray Cat</h1>
 
-<section class="entry_list">
-    <article class="entry">
+<section class="post_list">
+    <article class="post">
         <div class="content plain no_summary">Dreams keep me young
 Only mirrors tell the time</div>
         <div class="meta">2012-01-31 14:23 <span><a href="tag/fucker/">#fucker</a>, <a href="tag/sucker/">#sucker</a></span></div>
     </article>
     
-    <article class="entry">
+    <article class="post">
         <h3>What a Wonderful World</h3>
         <a class="summary plain" href="articles/2/" target="_blank">I see trees of green, red roses too
 I see them bloom for me and you 
@@ -20,12 +20,12 @@ And I think to myself, what a wonderful world...<div class="indicator">&#x21f1;r
         <div class="meta">2012-01-31 14:33</div>
     </article>
     
-    <article class="entry">
+    <article class="post">
         <div class="content plain no_summary">Winter is coming.</div>
         <div class="meta">2012-01-31 14:13</div>
     </article>
     
-    <article class="entry">
+    <article class="post">
         <h3>What a Wonderful World with Image</h3>
         <a class="summary plain" href="articles/2/" target="_blank"><img src="{{ STATIC_URL }}hypo/i/demo/Liquid_glass_by_matthileo.jpg" alt="" />I see trees of green, red roses too
 I see them bloom for me and you 
@@ -33,14 +33,12 @@ And I think to myself, what a wonderful world...<div class="indicator">&#x21f1;r
         <div class="meta">2012-01-31 14:33</div>
     </article>
     
-    <article class="entry">
-        <div class="thumbs">
-            <a href="images/2/" target="_blank">
-                <figure class="img1 cf">
-                    <img src="{{ STATIC_URL }}hypo/i/demo/Liquid_glass_by_matthileo.jpg" 
-                        class="hl" alt="" />
-                    <figcaption><div class="inr">description to this image</div></figcaption>
-                </figure>
+    <article class="post">
+        <div class="image_list fix_height">
+            <a class="image_container" href="images/2/" target="_blank">
+                <img src="{{ STATIC_URL }}hypo/i/demo/Liquid_glass_by_matthileo.jpg" 
+                     alt="" />
+                <div class="desc_wrap"><div class="desc">description to this image</div></div>
             </a>
             <div class="c"></div>
         </div>
@@ -48,21 +46,17 @@ And I think to myself, what a wonderful world...<div class="indicator">&#x21f1;r
         <div class="meta">2012-01-31 14:13</div>
     </article>
     
-    <article class="entry">
-        <div class="thumbs">
-            <a href="images/2/" target="_blank">
-                <figure class="img2 cf">
-                    <img src="{{ STATIC_URL }}hypo/i/demo/Serenity_Enchanted_by_sirpecangum.jpg" 
-                        class="hl" alt="" />
-                    <figcaption><div class="inr">description to this image</div></figcaption>
-                </figure>
+    <article class="post">
+        <div class="image_list fix_height">
+            <a class="image_container" href="images/2/" target="_blank">
+                <img src="{{ STATIC_URL }}hypo/i/demo/Serenity_Enchanted_by_sirpecangum.jpg" 
+                     alt="" />
+                <div class="desc_wrap"><div class="desc">description to this image</div></div>
             </a>
-            <a href="images/2/" target="_blank">
-                <figure class="img2 cf">
-                    <img src="{{ STATIC_URL }}hypo/i/demo/vamphuntd.jpg" 
-                        class="hl" alt="" />
-                    <figcaption><div class="inr">description to this image</div></figcaption>
-                </figure>
+            <a class="image_container" href="images/2/" target="_blank">
+                <img src="{{ STATIC_URL }}hypo/i/demo/vamphuntd.jpg" 
+                     alt="" />
+                <div class="desc_wrap"><div class="desc">description to this image</div></div>
             </a>
             <div class="c"></div>
         </div>
@@ -71,25 +65,19 @@ And I think to myself, what a wonderful world...<div class="indicator">&#x21f1;r
         <div class="meta">2012-01-31 14:13</div>
     </article>
     
-    <article class="entry">
-        <div class="thumbs">
-            <a href="images/2/" target="_blank">
-                <figure class="img3 cf">
-                    <img src="{{ STATIC_URL }}hypo/i/demo/vampire-hunter-d-night.jpg" alt="" />
-                    <figcaption><div class="inr">description to this image</div></figcaption>
-                </figure>
+    <article class="post">
+        <div class="image_list fix_height">
+            <a class="image_container" href="images/2/" target="_blank">
+                <img src="{{ STATIC_URL }}hypo/i/demo/vampire_hunter_d_night.jpg" alt="" />
+                <div class="desc_wrap"><div class="desc">description to this image</div></div>
             </a>
-            <a href="images/2/" target="_blank">
-                <figure class="img3 cf">
-                    <img src="{{ STATIC_URL }}hypo/i/demo/WarCraftArtBig.jpg" alt="" />
-                    <figcaption><div class="inr">description to this image</div></figcaption>
-                </figure>
+            <a class="image_container" href="images/2/" target="_blank">
+                <img src="{{ STATIC_URL }}hypo/i/demo/WarCraftArtBig.jpg" alt="" />
+                <div class="desc_wrap"><div class="desc">description to this image</div></div>
             </a>
-            <a href="images/2/" target="_blank">
-                <figure class="img3 cf">
-                    <img src="{{ STATIC_URL }}hypo/i/demo/The_Vampire_Hunter_D_by_Destinyfall_noBorder.jpg" alt="" />
-                    <figcaption><div class="inr">description to this image</div></figcaption>
-                </figure>
+            <a class="image_container" href="images/2/" target="_blank">
+                <img src="{{ STATIC_URL }}hypo/i/demo/The_Vampire_Hunter_D_by_Destinyfall_noBorder.jpg" alt="" />
+                <div class="desc_wrap"><div class="desc">description to this image</div></div>
             </a>
             <div class="c"></div>
         </div>
@@ -106,7 +94,7 @@ And I think to myself, what a wonderful world...<div class="indicator">&#x21f1;r
         
         $(this).closest('article').addClass('on');
     });*/
-   $('.entry_list .thumbs').each(function(idx, el){
+   $('.image_list.fix_height').each(function(idx, el){
        var j_row = $(el),
            j_imgs = j_row.find('img');
        
