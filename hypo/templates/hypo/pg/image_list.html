@@ -56,17 +56,12 @@
     
     <script id="darkbox_tpl" type="text/template">
         <div class="darkbox">
-            <header>
-                <div class="operations">
-                    <a href="javascript:void(0)">Share</a>
-                    <a href="javascript:void(0)">1:1</a>
-                    <a href="javascript:void(0)">Fullscreen</a>
-                    <a href="javascript:void(0)">Delete</a>
-                </div>
-            </header>
+            <header></header>
             <div class="bd">
                 <div class="col_m">
                     <img src="" alt="" />
+                    <a class="prev" href="#"></a>
+                    <a class="next" href="#"></a>
                 </div>
                 <div class="col_r"></div>
                 <div class="c"></div>
@@ -145,7 +140,7 @@
         hypo.darkbox.from_uri($(this).attr('href'));
     });
     
-    //hypo.darkbox.thumb_list_uri = '{{ site.uri }}images/thumbs/';
+    hypo.darkbox.append_thumb_from_uri('{{ request.path_info }}');
 })(jQuery);
     </script>
 {% endblock %}
