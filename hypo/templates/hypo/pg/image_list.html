@@ -54,6 +54,29 @@
         {% include 'hypo/com/image_container.html' %}
     </script>
     
+    <script id="darkbox_tpl" type="text/template">
+        <div class="darkbox">
+            <header>
+                <div class="operations">
+                    <a href="javascript:void(0)">Share</a>
+                    <a href="javascript:void(0)">1:1</a>
+                    <a href="javascript:void(0)">Fullscreen</a>
+                    <a href="javascript:void(0)">Delete</a>
+                </div>
+            </header>
+            <div class="bd">
+                <div class="col_m">
+                    <img src="" alt="" />
+                </div>
+                <div class="col_r"></div>
+                <div class="c"></div>
+            </div>
+            <footer>
+                <div class="thumb_list"></div>
+            </footer>
+        </div>
+    </script>
+    
     <script>
 (function($){
     var j_imgls = $('#imgls2init').removeAttr('id'),
@@ -116,6 +139,13 @@
             });
         });
     });
+    
+    j_imgls.on('click', '.image_container', function(evt){
+        evt.preventDefault();
+        hypo.darkbox.from_uri($(this).attr('href'));
+    });
+    
+    //hypo.darkbox.thumb_list_uri = '{{ site.uri }}images/thumbs/';
 })(jQuery);
     </script>
 {% endblock %}

@@ -682,12 +682,15 @@ class ImageCopy(models.Model):
     width_ts = property(lambda self: self.file.width_ts)
     height_ts = property(lambda self: self.file.height_ts)
     
-    def get_raw_uri(self, size=ImageFile.SIZE_SMALL):
-        return self.file.get_uri(size)
+    def get_absolute_url(self):
+        return '{}images/v/{}/'.format(self.site.uri, self.id_str)
     
     @property
     def uri(self):
-        return '{}images/{}/'.format(self.site.uri, self.id_str)
+        return self.get_absolute_url()
+    
+    def get_raw_uri(self, size=ImageFile.SIZE_SMALL):
+        return self.file.get_uri(size)
     
     @property
     def uri_f(self):

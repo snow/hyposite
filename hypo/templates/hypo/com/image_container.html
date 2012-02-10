@@ -1,4 +1,5 @@
-<a class="image_container" href="{% if img %}{{ img.uri }}{% else %}javascript:void(0){% endif %}">
+<a class="image_container" target="_blank" imgid="{{ img.id }}"
+   href="{% if img %}{{ img.uri }}{% if from %}from/{{ from }}/{% endif %}{% else %}javascript:void(0){% endif %}">
     <img src="{{ img.uri_s }}" alt="{{ img.description|truncatewords:20 }}" />
     {% if not img or img.description %}
     <div class="desc_wrap">

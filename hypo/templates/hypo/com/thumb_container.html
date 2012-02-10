@@ -1,0 +1,5 @@
+<a class="thumb_container" target="_blank" imgid="{{ img.id }}"
+   href="{% if img %}{{ img.uri }}{% if from %}from/{{ from }}/{% endif %}{% else %}javascript:void(0){% endif %}">
+    <img src="{{ img.uri_ts }}" alt="{{ img.description|truncatewords:20 }}" />
+    <div class="mask"></div>
+</a>

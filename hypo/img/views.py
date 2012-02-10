@@ -21,16 +21,35 @@ class StreamV(gv.ListView):
         if not site:
             raise Http404()
         
-        queryset = hypo.ImageCopy.objects.filter(site=site).order_by('-created')
-        return queryset
+        qs = hypo.ImageCopy.objects.filter(site=site).order_by('-created')
+        
+        since = self.request.GET.get('since', None)
+        if since:
+            qs = qs.filter(pk__gt=since)
+        
+        till = self.request.GET.get('till', None)  
+        if till:
+            qs = qs.filter(pk__lt=till)
+        
+        count = self.request.GET.get('count', None)
+        if not count:
+            count = 20
+        qs = qs[0:count]
+        
+        return qs
     
     def get_context_data(self, **kwargs):
         context = super(StreamV, self).get_context_data(**kwargs)
         context['site'] = hypo.Site.from_request(self.request)
         context['owner'] = context['site'].owner
         context['page_title'] = 'Recent Images'
+        context['from'] = 'stream'
         
         return context
+    
+    
+class ThumbStreamV(StreamV):    
+    template_name = 'hypo/pg/thumb_list.html'
 
 
 class UploadRawV(gv.View):
@@ -56,3 +75,32 @@ class UploadRawV(gv.View):
                             content_type='application/json')
 
         
+class DetailV(gv.DetailView):
+    model = hypo.ImageCopy
+    template_name = 'hypo/pg/image_detail.html'
+    context_object_name = 'image'
+    
+    def get_object(self):
+        site = hypo.Site.from_request(self.request)
+        try:
+            img = hypo.ImageCopy.objects.get(id_str=self.kwargs['id_str'], 
+                                             site=site)
+        except hypo.ImageCopy.DoesNotExist:
+            raise Http404()
+        else:
+            return img     
+        
+    def get_context_data(self, **kwargs):
+        context = super(DetailV, self).get_context_data(**kwargs)
+        
+        if 'from' in self.kwargs:
+            site = hypo.Site.from_request(self.request)
+            
+            if 'stream' == self.kwargs['from']:
+                context['thumbs'] = hypo.ImageCopy.objects.\
+                                        filter(id__gt=self.object.id-10, 
+                                               id__lt=self.object.id+10,
+                                               site=site).\
+                                        order_by('-created')[:20]
+        
+        return context   

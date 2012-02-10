@@ -1,0 +1,65 @@
+{% extends 'hypo/layout/row_b.html' %}
+
+{% block page_class %}pg-image_detail{% endblock %}
+
+{% block layout_bd %}
+<div id="darkbox2init">
+    <img src="{{ image.uri_f }}" alt="{{ image.description }}" imgid="{{ image.id }}" />
+    
+    <div class="inf darkbox_sidebar">
+        <div class="desc">{{ image.description }}</div>
+        <div class="created">{{ image.created|date:"Y-m-d H:i" }}</div>
+        <div class="exif">
+            {% for item in image.exif.items %}
+            <span>{{ item.0 }}</span>: <span>{{ item.1 }}</span><br />
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="operations darkbox_header">
+        <a href="javascript:void(0)">Share</a>
+        <a href="javascript:void(0)">1:1</a>
+        <a href="javascript:void(0)">Fullscreen</a>
+        <a href="/images/d/{{ image.id_str }}/">Delete</a>
+    </div>
+    
+    <!--<div class="thumb_list darkbox_footer">        
+        {% for thumb in thumbs %}<a href="{{ thumb.uri }}from/stream/" 
+                class="thumb_container{% if thumb.id == image.id %} on{% endif %}">
+            <img src="{{ thumb.uri_ts }}" alt="{{ thumb.description }}" />
+            <div class="mask"></div>
+        </a>{% endfor %}
+    </div>-->
+</div>
+<script id="darkbox_tpl" type="text/template">
+    <div class="darkbox">
+        <header>
+            <div class="operations">
+                <a href="javascript:void(0)">Share</a>
+                <a href="javascript:void(0)">1:1</a>
+                <a href="javascript:void(0)">Fullscreen</a>
+                <a href="/images/d/{{ image.id_str }}/">Delete</a>
+            </div>
+        </header>
+        <div class="bd">
+            <div class="col_m">
+                <img src="" alt="" />
+            </div>
+            <div class="col_r"></div>
+            <div class="c"></div>
+        </div>
+        <footer></footer>
+    </div>
+</script>
+<script>
+(function($){
+    hypo.darkbox.from_dom($('#darkbox2init').removeAttr('id'));
+})(jQuery);    
+</script>
+{% endblock %}
+
+{% block sec_r %}
+{% endblock %}
+
+{% block layout_extra %}
+{% endblock %}

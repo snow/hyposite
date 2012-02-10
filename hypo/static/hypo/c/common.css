@@ -186,6 +186,36 @@ h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid
     
 .image_list .empty {font-size:xx-large; color:#999; text-align:center}
 /*
+ * darkbox
+ */
+.darkbox {position:fixed; top:0; left:0; width:100%; height:100%;
+          background:#000; z-index:4}
+
+.darkbox .bd {position:relative}
+.darkbox .col_m {position:relative; display:table-cell; text-align:center; 
+                 vertical-align:middle}
+    .darkbox .col_m img {max-width:100%; max-height:100%}
+.darkbox .col_r {position:absolute; top:0; right:0; width:300px}
+
+.darkbox footer {position:fixed; left:0; bottom:0; width:100%; height:78px;
+                 overflow:hidden}
+    .darkbox .thumb_list {position:relative}
+    .darkbox .thumb_container {position:relative; display:inline-block; 
+                               padding:2px 0 2px 2px; z-index;2; 
+                               cursor:pointer}
+        .darkbox .thumb_container:last-child {padding-right:2px}
+        .darkbox .thumb_container img {border:1px solid transparent; width:72px;
+                                       height:72px}
+        .darkbox .thumb_container .mask {position:absolute; top:0; left:0; 
+                                         width:100%; height:100%; 
+                                         background:#000; opacity:0.7}
+                                         
+        .darkbox .on+.thumb_container {padding-left:0}
+        .darkbox .thumb_container.on {padding:1px; border:1px solid #000; 
+                                      background:#fff}
+        .darkbox .thumb_container.on img {border:1px solid #000}
+        .darkbox .thumb_container.on .mask {display:none}
+/*
  * edit link
  */
 sup.edit {display:none; margin-left:0.5em}
