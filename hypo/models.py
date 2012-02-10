@@ -46,10 +46,15 @@ class UserProfile(models.Model):
     
     @property    
     def primary_site(self):
-        return Site.objects.get(owner=self, is_primary=True)
+        return Site.objects.get(owner=self.user, is_primary=True)
     
-    def could_post_on(self, site):
-        return self.user == site.owner
+    def has_perm(self, object, perm=''):
+        if isinstance(object, Site):
+            return object.owner == self.user
+        elif isinstance(object, Post):
+            return object.site.owner == self.user
+        
+        return False
     
 @receiver(post_save, sender=User, 
           dispatch_uid='hypo.models.create_user_profile')
@@ -62,7 +67,7 @@ def _create_user_profile(instance, created, **kwargs):
 
 class Site(models.Model):
     ''''''
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(unique=True)
     title = models.CharField(max_length=255)
     owner = models.ForeignKey(User, unique=True)
     is_primary = models.BooleanField(default=True)
@@ -77,6 +82,27 @@ class Site(models.Model):
     def uri(self):
         return '/site/{}/'.format(self.slug)
     
+    @classmethod
+    def from_request(cls, request):
+        matches = re.match('/site/([-\w]+)/', request.path_info)
+        if matches:
+            slug = matches.groups()[0]
+            try:
+                site = cls.objects.get(slug=slug)
+                return site
+            except cls.DoesNotExist:
+                return None
+        return None
+            
+    @classmethod
+    def from_request_or_user(cls, request):
+        site = cls.from_request(request)
+        if site:
+            return site
+        elif request.user.is_authenticated():
+            return request.user.get_profile().primary_site
+        else:
+            return None
     
 #class SiteChoiceField(forms.ModelChoiceField):
 #    ''''''
@@ -202,7 +228,7 @@ class SignupForm(forms.ModelForm):
 class Post(models.Model):
     '''A post may contain title, text content and images'''    
     id_str = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField() # used in url as descript, it is NOT unique
     
     title = models.CharField(max_length=30, blank=True)
     
@@ -258,11 +284,14 @@ class Post(models.Model):
 #            raise NotImplemented()
 #        
 #    def get_content_format(self):
-#        return self.FORMATS[self.format]
+#        return self.FORMATS[self.format]       
+    
+    def get_absolute_url(self):
+        return '{}posts/v/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
     
     @property
     def uri(self):
-        return '{}posts/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
+        return self.get_absolute_url()
     
     @property
     def summary(self):
@@ -335,9 +364,8 @@ def _post_pre_save(instance, **kwargs):
     instance.text, content_plain, instance.text_summary = \
         Post.process_html_content_source(instance.text_source)
         
-    instance.slug = instance.title or \
-                    instance.text_summary[:20] or content_plain
-    instance.slug = quote(instance.slug.strip().replace(' ', '_'))
+    slug = instance.title or instance.text_summary or content_plain
+    instance.slug = quote(slug.strip()[:50].replace(' ', '_'))
     
 @receiver(post_save, sender=Post, 
           dispatch_uid='hypo.models.post_post_save')

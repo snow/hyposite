@@ -1,34 +1,34 @@
 # Create your views here.
 import django.views.generic as gv
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404, \
+                        HttpResponseForbidden
 from django.contrib.auth.models import User
 
 import hypo.models as hypo
-from hypo.utils import SiteVMixin
 
-class StreamV(gv.ListView, SiteVMixin):
+class StreamV(gv.ListView):
     ''''''
     model = hypo.Post
     template_name = 'hypo/pg/post_list.html'
     context_object_name = 'post_list'
     
     def get_queryset(self):
-        #site = self.get_site(request=self.request)
-        site = self.get_site()
-        owner = site.owner
-        queryset = hypo.Post.objects.filter(owner=owner, site=site).\
-                                     order_by('-updated')
+        site = hypo.Site.from_request(self.request)        
+        if not site:
+            raise Http404()
+        
+        queryset = hypo.Post.objects.filter(site=site).order_by('-updated')
         return queryset
     
     def get_context_data(self, **kwargs):
         context = super(StreamV, self).get_context_data(**kwargs)
-        context['site'] = self.get_site()
+        context['site'] = hypo.Site.from_request(self.request)
         context['owner'] = context['site'].owner
         
         return context
     
-
-class CreateV(gv.CreateView, SiteVMixin):
+    
+class CreateV(gv.CreateView):
     model = hypo.Post
     template_name = 'hypo/pg/post_form.html'
     form_class = hypo.PostForm
@@ -36,9 +36,9 @@ class CreateV(gv.CreateView, SiteVMixin):
     
     def form_valid(self, form):
         user = self.request.user
-        site = self.get_site(request=self.request)
+        site = hypo.Site.from_request_or_user(self.request)
         
-        if not user.get_profile().could_post_on(site):
+        if not user.get_profile().has_perm(site, 'post'):
             return HttpResponseForbidden()
         
         post = hypo.Post(owner=user, site=site, 
@@ -50,4 +50,58 @@ class CreateV(gv.CreateView, SiteVMixin):
         return HttpResponseRedirect(self.success_url)
 
 
+class DetailV(gv.DetailView):
+    model = hypo.Post
+    template_name = 'hypo/pg/post_detail.html'
+    
+    def get_object(self):
+        site = hypo.Site.from_request(self.request)
+        try:
+            post = hypo.Post.objects.get(id_str=self.kwargs['id_str'], 
+                                         site=site)
+        except hypo.Post.DoesNotExist:
+            raise Http404()
+        else:
+            return post
+
+
+class UpdateV(gv.UpdateView):
+    model = hypo.Post
+    template_name = 'hypo/pg/post_form.html'
+    form_class = hypo.PostForm
+
+    def get_object(self):
+        try:
+            post = hypo.Post.objects.get(id_str=self.kwargs['id_str'])
+            
+            if not self.request.user.get_profile().has_perm(post, 'update'):
+                return HttpResponseForbidden()
+            
+        except hypo.Post.DoesNotExist:
+            raise Http404()
+        else:
+            return post
         
+        
+class DeleteV(gv.DeleteView):
+    model = hypo.Post
+    success_url = '/dashboard/'
+    template_name = 'hypo/pg/post_detail.html'
+    
+    def get_object(self):
+        try:
+            post = hypo.Post.objects.get(id_str=self.kwargs['id_str'])
+            
+            if not self.request.user.get_profile().has_perm(post, 'delete'):
+                return HttpResponseForbidden()
+            
+        except hypo.Post.DoesNotExist:
+            raise Http404()
+        else:
+            return post
+        
+    def get_context_data(self, **kwargs):
+        context = super(DeleteV, self).get_context_data(**kwargs)
+        context['confirm_delete'] = True
+        
+        return context

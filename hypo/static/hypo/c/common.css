@@ -154,8 +154,11 @@ h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid
     .post_list .summary img {float:left; margin:0 5px 5px 0; max-width:180px;}    
     /*.post_list .summary:after {display:block; content:' '; clear:both}*/  
 
-.post_list .meta {margin-top:1.5em; padding:2px 0; border-bottom:1px solid #ccc; 
+.post_list footer {margin-top:1.5em; padding:2px 0; border-bottom:1px solid #ccc; 
                    color:#666}
+
+.post_list .meta {float:left}
+.post_list .operations {float:right}                   
                    
 /*
  * image list

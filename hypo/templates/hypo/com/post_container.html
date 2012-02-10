@@ -1,3 +1,4 @@
+{% load hypo_tags %}
 <article class="post">
     {% if post.title %}<h1>{{ post.title }}</h1>{% endif %}
     {% if post.summary %}
@@ -7,7 +8,18 @@
     <div class="content">{{ post.text|safe }}</div>
     {% endif %}
     
-    <div class="meta">
-        <span class="updated">{{ post.updated|date:"Y-m-d H:i" }}</span>
-    </div>
+    <footer>
+        <div class="meta">
+            <span class="updated">{{ post.updated|date:"Y-m-d H:i" }}</span>
+        </div>
+        
+        <div class="operations">
+            <a href="javascript:void(0)">Share</a>
+            {% if site_perms.post %}
+            <a href="/posts/u/{{ post.id_str }}/">Update</a>
+            <a href="/posts/d/{{ post.id_str }}/">Delete</a>
+            {% endif %}
+        </div>
+        <div class="c"></div>
+    </footer>
 </article>
