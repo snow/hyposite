@@ -4,6 +4,7 @@ import json
 import hashlib
 import os
 from datetime import datetime
+import time
 import tempfile
 import re
 from urllib2 import quote
@@ -23,6 +24,8 @@ from PIL import Image
 import pyexiv2 
 from pyrcp import struk
 
+from hypo.utils.utcdatetime import UTCDatetime, SimpleTZ
+
 # Create your models here.
 class UserProfile(models.Model):
     '''
@@ -35,12 +38,7 @@ class UserProfile(models.Model):
     fullname = models.CharField(max_length=255)
     about = models.TextField()
     avatar_uri = models.URLField()
-    
-    def save(self, *args, **kwargs):
-        if '' == self.fullname:
-            self.fullname = self.user.username
-            
-        return super(UserProfile, self).save(*args, **kwargs)
+    timezone = models.SmallIntegerField(default=0)
     
     def get_gravatar_uri(self):
         return 'http://www.gravatar.com/avatar/{}?s=120&d=monsterid'.\
@@ -68,7 +66,8 @@ class UserProfile(models.Model):
 def _create_user_profile(instance, created, **kwargs):
     '''Create empty user profile on user model created'''
     if created:
-        profile = UserProfile(user=instance)
+        profile = UserProfile(user=instance, 
+                              fullname=instance.username)
         profile.save()
 
 
@@ -118,7 +117,7 @@ class UserForm(forms.ModelForm):
     
     class Meta:
         model = UserProfile
-        fields = ('fullname', 'about')
+        fields = ('fullname', 'about', 'timezone')
         
     def save(self, *args, **kwargs):
         profile = super(UserForm, self).save(*args, **kwargs)
@@ -144,6 +143,7 @@ class SignupForm(forms.ModelForm):
     slug = forms.SlugField(max_length=255)
     title = forms.CharField(max_length=255)
     email = forms.EmailField(required=True)
+    timezone = forms.IntegerField()
     
     class Meta:
         model = User
@@ -174,8 +174,8 @@ class Post(models.Model):
     
     tags = models.ManyToManyField(Tag)
     
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created = models.PositiveIntegerField()
+    updated = models.PositiveIntegerField()
     owner = models.ForeignKey(User)
     site = models.ForeignKey(Site) 
     
@@ -212,6 +212,11 @@ class Post(models.Model):
     @property
     def summary(self):
         return self.text_summary
+    
+    @property
+    def updated_datetime(self):
+        dt = UTCDatetime(self.updated)
+        return dt.get_local_datetime(hours=self.owner.get_profile().timezone)
 
     _ALLOWED_HTML_ATTRS = ['id', 'title', 'dir', 'lang', 'xml:lang', 'href', 
                            'rel', 'src', 'alt', 'target']
@@ -244,12 +249,18 @@ class Post(models.Model):
 
 @receiver(pre_save, sender=Post, dispatch_uid='hypo.models.post_pre_save')
 def _post_pre_save(instance, **kwargs):
-    '''Create empty user profile on user model created'''
+    ''''''
     instance.text, content_plain, instance.text_summary = \
         Post.process_html_content_source(instance.text_source)
         
     slug = instance.title or instance.text_summary or content_plain
     instance.slug = quote(slug.strip().replace(' ', '_'), safe='')[:50]
+    
+    if not instance.created:
+        instance.created = time.mktime(datetime.utcnow().timetuple())
+    
+    if not instance.updated:
+        instance.updated = instance.created
     
 @receiver(post_save, sender=Post, 
           dispatch_uid='hypo.models.post_post_save')
@@ -278,7 +289,7 @@ class ImageFile(models.Model):
     '''
     id_str = models.CharField(max_length=255, unique=True, null=True)
     md5 = models.CharField(max_length=255, unique=True)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.PositiveIntegerField()
     
     SIZE_FULL = 'f'
     SIZE_LARGE = 'l'
@@ -460,6 +471,13 @@ class ImageFile(models.Model):
         
         return imgf
 
+@receiver(pre_save, sender=ImageFile, 
+          dispatch_uid='hypo.models.imagefile_pre_save')
+def _imagefile_pre_save(instance, **kwargs):
+    ''''''    
+    if not instance.created:
+        instance.created = time.mktime(datetime.utcnow().timetuple())
+        
   
 class ImageCopy(models.Model):
     '''
@@ -476,7 +494,7 @@ class ImageCopy(models.Model):
     site = models.ForeignKey(Site)
     #set = models.ForeignKey(ImageSet, null=True, blank=True)
     tags = models.ManyToManyField(Tag)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.PositiveIntegerField()
     
     file = models.ForeignKey(ImageFile)
     
@@ -601,3 +619,10 @@ class ImageCopy(models.Model):
         img.save()
         
         return img
+    
+@receiver(pre_save, sender=ImageCopy, 
+          dispatch_uid='hypo.models.imagecopy_pre_save')
+def _imagecopy_pre_save(instance, **kwargs):
+    ''''''    
+    if not instance.created:
+        instance.created = time.mktime(datetime.utcnow().timetuple())
