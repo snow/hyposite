@@ -124,6 +124,7 @@ class UserForm(forms.ModelForm):
         if profile:
             user = profile.user
             user.email = self.cleaned_data['email']
+            user.username = self.cleaned_data['email']
             user.save()
             
         return profile
@@ -131,20 +132,10 @@ class UserForm(forms.ModelForm):
         
 class SiteForm(forms.ModelForm):
     ''''''
-    username = forms.CharField(max_length=30)
     
     class Meta:
         model = Site
-        exclude = ('owner',)
-        
-    def save(self, *args, **kwargs):
-        site = super(SiteForm, self).save(*args, **kwargs)
-        if site:
-            user = site.owner
-            user.username = self.cleaned_data['username']
-            user.save()
-            
-        return site
+        fields = ('slug', 'title')
         
         
 class SignupForm(forms.ModelForm):

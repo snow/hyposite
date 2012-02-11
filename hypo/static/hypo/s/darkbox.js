@@ -21,6 +21,7 @@
         
         initialized = false,
         is_shown = false,
+        layout_initialized = false,
         
         E_SHOW_IMG = 'evt-hypo-darkbox-show_img',
         E_NEXT = 'evt-hypo-darkbox-next',
@@ -122,7 +123,7 @@
         init_keyboard();
         
         $(window).on('resize', function(evt){
-            is_shown && layout()
+            is_shown && layout();
         });
         
         initialized = true;
@@ -176,12 +177,16 @@
         j_sidebar.empty().append(target.j_sidebar);
         
         j_darkbox.trigger(E_SHOW_IMG, [target]);
+        
+        if(!layout_initialized){
+            layout();
+            layout_initialized = true;
+        }
     }
     
     function show_darkbox(){
         init_check('on');
         j_darkbox.show();
-        layout();
         is_shown = true;
     }
     
@@ -279,6 +284,20 @@
         
         var imgid = target.j_img.attr('imgid'),
             j_cur_thumb = j_ft.find('[imgid={}]'.replace('{}', imgid));
+            
+        if(!j_cur_thumb.length){return;}
+        
+        if(j_cur_thumb.nextAll('.thumb_container').length){
+            j_next.removeClass('off');
+        } else {
+            j_next.addClass('off');
+        }
+        
+        if(j_cur_thumb.prevAll('.thumb_container').length){
+            j_prev.removeClass('off');
+        } else {
+            j_prev.addClass('off');
+        }
         
         j_thumb_list.find('.thumb_container.on').removeClass('on');
         j_cur_thumb.addClass('on');

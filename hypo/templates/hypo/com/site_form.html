@@ -2,7 +2,7 @@
     <label>
         <span class="label">http://{{ request.META.SERVER_NAME }}/site/</span>
         <input name="slug" type="text" required="true"
-            value="{% if is_signup %}{{ form.slug.value|default:'' }}{% else %}{{ form.instance.owner.username|default:'' }}{% endif %}" />
+            value="{{ form.slug.value|default:'' }}" />
     </label><br />
     {{ form.slug.errors }}
 </div>

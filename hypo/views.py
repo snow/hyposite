@@ -178,7 +178,7 @@ class SiteSettingsV(gv.UpdateView):
     success_url = '/dashboard/'
     
     def get_object(self):
-        return hypo.Site.objects.get(owner=self.request.user)
+        return self.request.user.get_profile().primary_site
     
 
 #class PhotoStreamV(gv.DetailView):
