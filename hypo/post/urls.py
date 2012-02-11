@@ -5,7 +5,7 @@ import views as v
 
 urlpatterns = patterns('',
     url(r'^$', v.StreamV.as_view()),
-    #url(r'^tagged/(?P<tagname>.+)/$', v.TagV.as_view()),
+    url(r'^tagged/(?P<tag_name>[^/]+)/$', v.StreamV.as_view()),
     
     url(r'^c/$', login_required(v.CreateV.as_view())),
     url(r'^create/$', login_required(v.CreateV.as_view())),

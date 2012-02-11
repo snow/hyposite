@@ -5,6 +5,8 @@
 {% block sec_m %}
     <h1 class="site_title">{{ site.title }}{% if owner == user %}<sup class="edit"><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
     
+    {% if tag_name %}<h2>Tagged: {{ tag_name }}</h2>{% endif %}
+    
     <section class="post_list">
         {% for post in post_list %}
             {% include 'hypo/com/post_container.html' %}

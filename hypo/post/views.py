@@ -17,7 +17,18 @@ class StreamV(gv.ListView):
         if not site:
             raise Http404()
         
-        queryset = hypo.Post.objects.filter(site=site).order_by('-updated')
+        if 'tag_name' in self.kwargs:
+            try:
+                tag = hypo.Tag.objects.get(name=self.kwargs['tag_name'].strip())
+            except hypo.Tag.DoesNotExist:
+                raise Http404()
+            else:
+                queryset = tag.post_set
+        else:
+            queryset = hypo.Post.objects
+        
+        queryset = queryset.filter(site=site).order_by('-updated')
+        
         return queryset
     
     def get_context_data(self, **kwargs):
@@ -25,8 +36,11 @@ class StreamV(gv.ListView):
         context['site'] = hypo.Site.from_request(self.request)
         context['owner'] = context['site'].owner
         
+        if 'tag_name' in self.kwargs:
+            context['tag_name'] = self.kwargs['tag_name']
+        
         return context
-    
+
     
 class CreateV(gv.CreateView):
     model = hypo.Post
