@@ -11,6 +11,13 @@
     <footer>
         <div class="meta">
             <span class="updated">{{ post.updated|date:"Y-m-d H:i" }}</span>
+            {% if post.tags.exists %}
+            <span class="tags">Tags:
+                {% for tag in post.tags.all %}
+                <a class="tag" href="{{ site.uri }}posts/tagged/{{ tag.slug }}/">{{ tag.name }}</a>
+                {% endfor %}
+            </span>
+            {% endif %}
         </div>
         
         <div class="operations">

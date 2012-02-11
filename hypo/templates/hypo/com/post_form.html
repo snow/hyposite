@@ -19,4 +19,13 @@
     {{ form.content_source.errors }}
 </div>
 
+<div class="formrow tags">
+    <label>Tags <span class="help">(seperated by comma)</span>
+        <div class="fakeborder">
+            <textarea name="tag_str">{{ form.instance.tag_str|default:'' }}</textarea>
+        </div>
+    </label>
+    {{ form.tags.errors }}
+</div>
+
 <!--<input name="site" type="hidden" value="{{ form.site.value|default:0 }}" />-->

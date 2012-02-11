@@ -45,9 +45,10 @@ class CreateV(gv.CreateView):
                          text_source=form.cleaned_data['text_source'],
                          title=form.cleaned_data['title'])
         post.save()
+        post.tag_str = form.cleaned_data['tag_str']
         
         self.object = post # hack for super methods to work
-        return HttpResponseRedirect(self.success_url)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class DetailV(gv.DetailView):
@@ -81,6 +82,12 @@ class UpdateV(gv.UpdateView):
             raise Http404()
         else:
             return post
+        
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.tag_str = form.cleaned_data['tag_str']
+
+        return HttpResponseRedirect(self.get_success_url())
         
         
 class DeleteV(gv.DeleteView):

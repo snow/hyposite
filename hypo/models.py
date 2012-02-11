@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import cgi
 import json
 import hashlib
@@ -104,12 +105,6 @@ class Site(models.Model):
         else:
             return None
     
-#class SiteChoiceField(forms.ModelChoiceField):
-#    ''''''
-#    def __init__(self, user, *args, **kwargs):
-#        queryset = Site.objects.filter(owner=user)
-#        super(SiteChoiceField, self).__init__(queryset, *args, **kwargs)
-
 
 class UserForm(forms.ModelForm):
     ''''''
@@ -132,7 +127,6 @@ class UserForm(forms.ModelForm):
         
 class SiteForm(forms.ModelForm):
     ''''''
-    
     class Meta:
         model = Site
         fields = ('slug', 'title')
@@ -147,74 +141,17 @@ class SignupForm(forms.ModelForm):
     
     class Meta:
         model = User
-        exclude = ('username', 'password', 'last_login', 'date_joined')         
+        exclude = ('username', 'password', 'last_login', 'date_joined')
+
+
+class Tag(models.Model):
+    ''''''
+    name = models.CharField(max_length=255, unique=True)
+    
+    @property
+    def slug(self):
+        return quote(self.name.encode('utf-8'), safe='')
         
-        
-#class Entry(models.Model):
-#    '''super class of article, image set, status and so on'''
-#    id_str = models.CharField(max_length=255, default='')
-#    owner = models.ForeignKey(User)
-#    site = models.ForeignKey(Site)
-#    
-##    T_ARTICLE = 1
-##    T_IMAGE_SET = 2
-##    TYPES = {
-##        T_ARTICLE: 'article',
-##        T_IMAGE_SET: 'image_set'
-##    }    
-##    type = models.PositiveSmallIntegerField(choices=TYPES.items(), null=True)
-#    
-#    created = models.DateTimeField(auto_now_add=True)
-#    updated = models.DateTimeField(auto_now=True)
-#    
-#    source = models.URLField(null=True, blank=True)
-#    
-#    def __init__(self, *args, **kwargs):
-#        super(Entry, self).__init__(*args, **kwargs)
-#        #self.__ext_attrs = {}
-#        self.__sub_object = None
-#    
-#    def __get_sub_object(self):
-#        if not self.__subobject:        
-#            if self.T_ARTICLE == self.type:
-#                self.__sub_object = self.article
-#            elif self.T_IMAGE_SET == self.type:
-#                self.__sub_object = self.imageset
-#            else:
-#                raise NotImplemented()
-#            
-#        return self.__sub_object
-#    
-#    def __get_sub_attr(self, attr, default=None):
-#        return getattr(self.__get_sub_object(), attr, default)
-#        
-#    @property
-#    def uri(self):
-#        return self.__get_sub_attr('uri')
-#    
-#    @property
-#    def title(self):
-#        return self.__get_sub_attr('title', '')
-#    
-#    @property
-#    def summary(self):
-#        return self.__get_sub_attr('summary', '')
-#    
-#    @property
-#    def text(self):
-#        return self.__get_sub_attr('text', '')
-#    
-##    
-##    def get_imgs(self):
-##        return []
-#    
-#@receiver(post_save, sender=Entry, 
-#          dispatch_uid='hypo.models.assign_entry_id_str')
-#def _assign_entry_id_str(instance, created, **kwargs):
-#    '''Create empty user profile on user model created'''
-#    if '' == instance.id_str:
-#        instance.id_str = struk.int2str(instance.id)
-#        instance.save()
         
 class Post(models.Model):
     '''A post may contain title, text content and images'''    
@@ -229,53 +166,35 @@ class Post(models.Model):
     
     images = models.ManyToManyField('ImageCopy')
     
+    tags = models.ManyToManyField(Tag)
+    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User)
-    site = models.ForeignKey(Site)
-#    F_PLAIN = 0str to url
-#    F_HTML = 1
-#    F_MARKDOWN = 2
-#    FORMATS = {
-#        F_PLAIN: 'plain',
-#        F_HTML: 'html',
-#        F_MARKDOWN: 'markdown',
-#    }
-#    format = models.PositiveSmallIntegerField(choices=FORMATS.items(), 
-#                                              default=F_PLAIN)
+    site = models.ForeignKey(Site) 
     
+    @property
+    def tag_str(self):
+        if self.id:
+            return ', '.join([tag.name for tag in self.tags.all()])
+        else:
+            return ''
     
-    #link = models.URLField()
-    
-#    T_STATUS = 0
-#    T_ARTICLE = 1
-#    T_LINK = 2
-#    T_IMAGE = 3
-#    TYPES = {
-#        T_STATUS: T_STATUS,
-#        T_ARTICLE: T_ARTICLE,
-#        T_LINK: T_LINK,
-#        T_IMAGE: T_IMAGE,
-#    }
-#    type = models.PositiveSmallIntegerField(choices=TYPES.items(), 
-#                                            default=T_STATUS)
-    
-    
-#    def modify_content(self, source, format):
-#        self.content_source = source
-#        self.format = format
-#        
-#        if self.F_PLAIN == self.format:
-#            self.content, self.content_summary = \
-#                self.process_plain_content_source(source)
-#        elif self.F_HTML == self.format:
-#            self.content, self.content_summary = \
-#                self.process_html_content_source(source)
-#        else:
-#            raise NotImplemented()
-#        
-#    def get_content_format(self):
-#        return self.FORMATS[self.format]       
+    @tag_str.setter
+    def tag_str(self, str):
+        tags = str.replace(u'，', u',').split(',')
+        
+        self.tags.clear()
+        
+        for tag_name in tags:
+            tag_name = tag_name.strip()
+            try:
+                tag = Tag.objects.get(name=tag_name)
+            except Tag.DoesNotExist:
+                tag = Tag(name=tag_name)
+                tag.save()
+                
+            self.tags.add(tag)
     
     def get_absolute_url(self):
         return '{}posts/v/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
@@ -287,38 +206,6 @@ class Post(models.Model):
     @property
     def summary(self):
         return self.text_summary
-    
-#    @classmethod
-#    def create(cls, user, site, content_source, title=''):    
-#        try:
-#            entry = Entry(owner=user, site=site, type=Entry.T_ARTICLE)
-#            entry.save()
-#            
-#            article = cls(entry=entry, title=title, 
-#                          content_source=content_source)
-#            #article.modify_content(content_source, format)
-#            article.save()
-#            
-#            return article
-#        except Exception as err:
-#            try:
-#                article.delete()
-#            except:
-#                pass  
-#            
-#            try:
-#                entry.delete()
-#            except:
-#                pass                
-#            
-#            raise err
-        
-#    @classmethod
-#    def process_plain_content_source(cls, source):
-#        content = cgi.escape(source)
-#        summary = cls.extract_content_summary(content)
-#        
-#        return (content, summary)
 
     _ALLOWED_HTML_ATTRS = ['id', 'title', 'dir', 'lang', 'xml:lang', 'href', 
                            'rel', 'src', 'alt', 'target']
@@ -356,7 +243,7 @@ def _post_pre_save(instance, **kwargs):
         Post.process_html_content_source(instance.text_source)
         
     slug = instance.title or instance.text_summary or content_plain
-    instance.slug = quote(slug.strip()[:50].replace(' ', '_'))
+    instance.slug = quote(slug.strip()[:50].replace(' ', '_'), safe='')
     
 @receiver(post_save, sender=Post, 
           dispatch_uid='hypo.models.post_post_save')
@@ -369,6 +256,8 @@ def _post_post_save(instance, created, **kwargs):
         
 class PostForm(forms.ModelForm):
     ''''''
+    tag_str = forms.CharField()
+    
     class Meta:
         model = Post
         fields = ('title', 'text_source')
@@ -433,16 +322,11 @@ class ImageFile(models.Model):
         
     def get_uri(self, size=SIZE_SMALL):
         uri = self.file.url
-        #l = logging.getLogger('c')
-        #l.debug(uri)
         
         if self.SIZE_FULL == size:
             return uri
         else:
             path, ext = os.path.splitext(uri)
-            #l.debug(path)
-            #l.debug(ext)
-            #l.debug(''.join(('{}_{}'.format(path, size), ext)))
             return ''.join((['{}_{}'.format(path, size), ext])) 
         
     def resample(self):
@@ -570,74 +454,6 @@ class ImageFile(models.Model):
         
         return imgf
 
-
-#class ImageSet(Entry):
-#    '''
-#    Image set
-#    '''
-#    description = models.TextField()
-#    is_temp = models.BooleanField(default=True)
-#    
-#    article = models.ForeignKey(Article, unique=True, null=True, blank=True)
-#    
-#    @property
-#    def title(self):
-#        return self.description[:20]
-#    
-#    @property
-#    def uri(self):
-#        uri = '{}image_sets/{}/'.format(self.site.uri, self.id_str)
-#        if self.title:
-#            uri = '{}{}/'.format(uri, self.title)
-#            
-#        return uri    
-#    
-#    @property
-#    def text(self):
-#        return self.description
-#    
-#    @property
-#    def summary(self):
-#        return self.title 
-    
-#    @classmethod
-#    def create(cls, user, site, description='', article=None, is_temp=True):    
-#        try:
-#            entry = Entry(owner=user, site=site, type=Entry.T_IMAGE_SET)
-#            entry.save()
-#            
-#            set = cls(description=description, is_temp=is_temp, entry=entry, 
-#                      article=article)
-#            #article.modify_content(content_source, format)
-#            set.save()
-#            
-#            return set
-#        except Exception as err:
-#            try:
-#                set.delete()
-#            except:
-#                pass  
-#            
-#            try:
-#                entry.delete()
-#            except:
-#                pass                
-#            
-#            raise err
-#class Tag(models.Model):
-#    '''
-#    Tag
-#    '''
-#    text = models.CharField(max_length=255, unique=True)
-#    created = models.DateTimeField(auto_now_add=True)
-#@receiver(post_save, sender=ImageSet, 
-#          dispatch_uid='hypo.models.imageset_post_save')
-#def _imageset_post_save(instance, created, **kwargs):
-#    ''''''
-#    if created:
-#        entry = instance.entry_ptr
-#        entry.type = Entry.T_IMAGE_SET
-#        entry.save()
   
 class ImageCopy(models.Model):
     '''
