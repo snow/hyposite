@@ -10,6 +10,7 @@ from urllib2 import quote
 
 from BeautifulSoup import BeautifulSoup 
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import pre_save, post_save
 from django.db.models.fields.files import FieldFile
 from django.core.files import File
@@ -56,6 +57,11 @@ class UserProfile(models.Model):
             return object.site.owner == self.user
         
         return False
+    
+    @property
+    def tags(self):
+        return Tag.objects.filter(Q(post__owner=self.user) | \
+                                  Q(imagecopy__owner=self.user))
     
 @receiver(post_save, sender=User, 
           dispatch_uid='hypo.models.create_user_profile')
@@ -243,7 +249,7 @@ def _post_pre_save(instance, **kwargs):
         Post.process_html_content_source(instance.text_source)
         
     slug = instance.title or instance.text_summary or content_plain
-    instance.slug = quote(slug.strip()[:50].replace(' ', '_'), safe='')
+    instance.slug = quote(slug.strip().replace(' ', '_'), safe='')[:50]
     
 @receiver(post_save, sender=Post, 
           dispatch_uid='hypo.models.post_post_save')
@@ -469,7 +475,7 @@ class ImageCopy(models.Model):
     owner = models.ForeignKey(User)
     site = models.ForeignKey(Site)
     #set = models.ForeignKey(ImageSet, null=True, blank=True)
-    #tags = models.ManyToManyField(Tag, related_name='images')
+    tags = models.ManyToManyField(Tag)
     created = models.DateTimeField(auto_now_add=True)
     
     file = models.ForeignKey(ImageFile)

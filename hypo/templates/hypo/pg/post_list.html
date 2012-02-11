@@ -21,18 +21,12 @@
 {% block sec_r %}
 {% include 'hypo/com/site_owner_r.html' %}
 {% include 'hypo/com/site_nav_r.html' with cur='posts' %}
-<!--
 <section class="tags">
     <h4>tags</h4>
-    <a class="tag" href="#">bike</a>
-    <a class="tag" href="#">beauty</a>
-    <a class="tag" href="#">basketball</a>
-    <a class="tag" href="#">cat</a>
-    <a class="tag" href="#">coding</a>
-    <a class="tag" href="#">film</a>
-    <a class="tag" href="#">gaming</a>
-    <a class="tag" href="#">fighting</a>
-</section>-->
+    {% for tag in owner.get_profile.tags %}
+    <a class="tag" href="{{ site.uri }}posts/tagged/{{ tag.slug }}/">{{ tag.name }}</a>
+    {% endfor %}
+</section>
 
 
 {% endblock %}
