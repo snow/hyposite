@@ -111,6 +111,8 @@
         j_ft = j_darkbox.find('footer');
         j_thumb_list = j_ft.find('.thumb_list');
         
+        j_thumb_tpl = $($('#thumb_container_tpl').text());
+        
         rcp.preimg(PLACEHOLDER_URI);
         rcp.preimg('/s/common/i/view-40.png');
         rcp.preimg('/s/common/i/arrow-l-45_93.png');
@@ -198,21 +200,29 @@
         show_image(target);
     };
     
+    var _target_cache = {}
     clsr.from_uri = function(uri){
         initialized || init();
         
         show_darkbox();
         pre_show();
-        $('<div />').load('{} #darkbox2init'.replace('{}', uri), function(evt){
-            var target = extract_from_dom($(this)); 
-            show_image(target);
-        });
+        
+        if(_target_cache[uri]){
+            show_image(_target_cache[uri]);
+        } else {
+            $('<div />').load('{} #darkbox2init'.replace('{}', uri), function(evt){
+                var target = extract_from_dom($(this));
+                _target_cache[uri] = target;
+                show_image(target);
+            });
+        }
     };
     
     //
     // optional thumb list functions
     //    
     var _thumb_width = false,
+        j_thumb_tpl,
     
         E_THUMBS_ADDED = 'evt-hypo-darkbox-thumbs_added';
     
@@ -225,6 +235,16 @@
             j_thumb_list.append($(this).find('.thumb_container'));
             j_darkbox.trigger(E_THUMBS_ADDED);
         });
+    };
+    
+    clsr.prepend_thumb_from_json = function(json){
+        initialized || init();
+        
+        var j_t = j_thumb_tpl.clone();
+        j_t.attr('href', json.uri).attr('imgid', json.id);
+        j_t.find('img').attr('src', json.uri_ts).attr('alt', json.description);
+        j_t.prependTo(j_thumb_list);
+        j_darkbox.trigger(E_THUMBS_ADDED);
     };
     
     function get_thumb_width(){
@@ -245,8 +265,13 @@
     function adjust_thumb_list_width(evt){
         init_check('adjust_thumb_list_width');
         
-        j_thumb_list.width(get_thumb_width() * 
-                           j_thumb_list.find('.thumb_container').length + 10);
+        var count_thumbs = j_thumb_list.find('.thumb_container').length;
+        if(count_thumbs){
+            j_thumb_list.removeClass('off');
+            j_thumb_list.width(get_thumb_width() * count_thumbs + 10);
+        } else {
+            j_thumb_list.addClass('off');
+        }
     }
     
     function set_current_thumb(evt, target){

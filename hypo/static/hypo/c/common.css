@@ -204,11 +204,14 @@ h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid
         .darkbox .prev {left:0; background-image:url('/s/hypo/i/arrow-l-45_93.png')}
         .darkbox .next {right:0; background-image:url('/s/hypo/i/arrow-r-45_93.png')}
         
+        .darkbox .prev.off,
+        .darkbox .next.off {display:none}
+        
 .darkbox .col_r {position:absolute; top:0; right:0; width:300px}
 
-.darkbox footer {position:fixed; left:0; bottom:0; width:100%; 
-                 overflow:hidden}
-    .darkbox .thumb_list {position:relative; height:78px;}
+.darkbox footer {position:fixed; left:0; bottom:0; width:100%; overflow:hidden}
+    .darkbox .thumb_list {position:relative; height:78px}
+    .darkbox .thumb_list.off {display:none}
     .darkbox .thumb_container {position:relative; display:inline-block; 
                                padding:2px 0 2px 2px; z-index;2; 
                                cursor:pointer}

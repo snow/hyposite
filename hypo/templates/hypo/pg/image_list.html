@@ -55,21 +55,11 @@
     </script>
     
     <script id="darkbox_tpl" type="text/template">
-        <div class="darkbox">
-            <header></header>
-            <div class="bd">
-                <div class="col_m">
-                    <img src="" alt="" />
-                    <a class="prev" href="#"></a>
-                    <a class="next" href="#"></a>
-                </div>
-                <div class="col_r"></div>
-                <div class="c"></div>
-            </div>
-            <footer>
-                <div class="thumb_list"></div>
-            </footer>
-        </div>
+        {% include 'hypo/com/darkbox.html' %}
+    </script>
+    
+    <script id="thumb_container_tpl" type="text/template">
+        {% include 'hypo/com/thumb_container.html' %}
     </script>
     
     <script>
@@ -117,6 +107,8 @@
         j_t.find('.mask').remove();
         j_t.attr('href', resp.uri);
         j_t.find('img').attr('src', resp.uri_s);
+        
+        hypo.darkbox.prepend_thumb_from_json(resp);
     });
     
     rcp.j_doc.on(rcp.filefield.E_UPLOAD_FAILED, 
@@ -137,7 +129,11 @@
     
     j_imgls.on('click', '.image_container', function(evt){
         evt.preventDefault();
-        hypo.darkbox.from_uri($(this).attr('href'));
+        
+        var j_t = $(this);
+        if(j_t.hasClass('ing') || j_t.hasClass('err')){return;}
+        
+        hypo.darkbox.from_uri(j_t.attr('href'));
     });
     
     hypo.darkbox.append_thumb_from_uri('{{ request.path_info }}');
