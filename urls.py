@@ -22,3 +22,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
+
+if 'NEMO_URI_ROOT' in settings:    
+    urlpatterns += patterns('',
+        url(settings.NEMO_URI_ROOT[1:], include('nemo.urls')),
+    )
