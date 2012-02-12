@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
-
+from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -23,7 +23,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
 
-if 'NEMO_URI_ROOT' in settings:    
+_nemo_root = getattr(settings, 'NEMO_URI_ROOT', False)
+if _nemo_root:    
     urlpatterns += patterns('',
-        url(settings.NEMO_URI_ROOT[1:], include('nemo.urls')),
+        url(_nemo_root[1:], include('nemo.urls')),
     )
