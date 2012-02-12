@@ -20,3 +20,5 @@ settings.py
 django_pyrcp
 nemo
 persistent_messages
+
+reset_db.sh
