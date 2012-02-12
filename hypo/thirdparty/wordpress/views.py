@@ -1,4 +1,5 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, \
+                        HttpResponseForbidden
 import django.views.generic as gv
 from django import forms
 
@@ -15,8 +16,11 @@ class ImportXMLV(gv.FormView):
     success_url = '/dashboard'
     
     def form_valid(self, form):
-        import logging
-        l = logging.getLogger('c')
+        user = self.request.user
+        site = user.get_profile().primary_site
+        
+        if not user.get_profile().has_perm(site, 'post'):
+            return HttpResponseForbidden()
         
         file = form.cleaned_data['file']
         
@@ -25,9 +29,6 @@ class ImportXMLV(gv.FormView):
         
         if 'text/xml' != file.content_type:
             raise Exception('invalid file type')
-        
-        user = self.request.user
-        site = user.get_profile().primary_site
         
         for e_post in XMLParser.extract_posts_from_file(file):
             title = XMLParser.extract_title(e_post)

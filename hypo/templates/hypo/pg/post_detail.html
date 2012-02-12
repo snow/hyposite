@@ -15,13 +15,13 @@
     <div class="text">{{ post.text|safe }}</div>
     <footer>
         <div class="meta">
-            <span class="updated">{{ post.updated|date:"Y-m-d H:i" }}</span>
+            <span class="updated">{{ post.updated_datetime|date:"Y-m-d H:i" }}</span>
         </div>
         
         {% if not confirm_delete %}
         <div class="operations">
-            <a href="javascript:void(0)">Share</a>
-            {% if site_perms.fuck_ur_mother %}
+            <!--<a href="javascript:void(0)">Share</a>-->
+            {% if site_perms.post %}
             <a href="/posts/u/{{ post.id_str }}/">Update</a>
             <a href="/posts/d/{{ post.id_str }}/">Delete</a>
             {% endif %}
