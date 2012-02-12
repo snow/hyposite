@@ -21,6 +21,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django import forms
+from django.conf import settings
 from PIL import Image
 import pyexiv2 
 from pyrcp import struk
@@ -98,18 +99,37 @@ class Site(models.Model):
     
     @property
     def uri(self):
-        return '/site/{}/'.format(self.slug)
+        server_name = getattr(settings, 'SERVER_NAME', False)
+        
+        if server_name:
+            return '//{}.{}/'.format(self.slug, server_name)
+        else:
+            return '/site/{}/'.format(self.slug)
     
     @classmethod
     def from_request(cls, request):
-        matches = re.match('/site/([-\w]+)/', request.path_info)
-        if matches:
-            slug = matches.groups()[0]
+        slug = None
+                
+        server_name = getattr(settings, 'SERVER_NAME', False)        
+        if server_name and request.META['HTTP_HOST'].endswith(server_name):
+            l = len(server_name)
+            subdomain = request.META['HTTP_HOST'][:-(l+1)]
+            
+            if subdomain:
+                slug = subdomain
+        
+        else:
+            matches = re.match('/site/([-\w]+)/', request.path_info)
+            if matches:
+                slug = matches.groups()[0]
+        
+        if slug:
             try:
                 site = cls.objects.get(slug=slug)
                 return site
             except cls.DoesNotExist:
                 return None
+                
         return None
             
     @classmethod

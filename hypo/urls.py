@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 import views as v 
 
 urlpatterns = patterns('',
-    url(r'^$', v.IndexV.as_view()),
+    url(r'^index/$', v.IndexV.as_view()),
     
     url(r'^site/settings/', login_required(v.SiteSettingsV.as_view())),
     #url(r'^site/(?P<slug>[^/]+)/img/$', v.PhotoStreamV.as_view()),
@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     
     url(r'^site/(?P<site_slug>[-\w]+)/$', include('hypo.post.urls')),
     url(r'^site/(?P<site_slug>[-\w]+)/posts/', include('hypo.post.urls')),
+    url(r'^$', include('hypo.post.urls')),
     url(r'^posts/', include('hypo.post.urls')),
     
 #    url(r'^site/(?P<site_slug>[^/]+)/image_sets/', include('hypo.imgset.urls')),
@@ -33,6 +34,6 @@ urlpatterns = patterns('',
     url(r'^under_construction/$', v.UnderConstructionV.as_view()),
     
     # dev
-    #url(r'^lucifer/$', v.LuciferV.as_view()),
+    url(r'^lucifer/$', v.LuciferV.as_view()),
     #url(r'^m_r/$', v.M_RV.as_view()),
 )

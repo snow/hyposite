@@ -3,3 +3,5 @@ requirments
 * python-beautifulsoup
 * pyfyd
 * pyrcp
+* flup # for fcgi
+* python-pyexiv2

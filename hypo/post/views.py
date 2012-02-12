@@ -14,10 +14,6 @@ class StreamV(gv.ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        site = hypo.Site.from_request(self.request)        
-        if not site:
-            raise Http404()
-        
         if 'tag_name' in self.kwargs:
             try:
                 tag = hypo.Tag.objects.get(name=self.kwargs['tag_name'].strip())
@@ -28,19 +24,27 @@ class StreamV(gv.ListView):
         else:
             queryset = hypo.Post.objects
         
-        queryset = queryset.filter(site=site).order_by('-updated')
+        queryset = queryset.filter(site=self.site).order_by('-updated')
         
         return queryset
     
     def get_context_data(self, **kwargs):
         context = super(StreamV, self).get_context_data(**kwargs)
-        context['site'] = hypo.Site.from_request(self.request)
-        context['owner'] = context['site'].owner
+        context['site'] = self.site
+        context['owner'] = self.site.owner
         
         if 'tag_name' in self.kwargs:
             context['tag_name'] = self.kwargs['tag_name']
         
         return context
+    
+    def dispatch(self, request, *args, **kwargs):
+        site = hypo.Site.from_request(request)
+        if site:
+            self.site = site
+            return super(StreamV, self).dispatch(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/index/')
 
     
 class CreateV(gv.CreateView):
