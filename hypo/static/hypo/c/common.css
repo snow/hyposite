@@ -137,6 +137,9 @@ body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-in
  * post list
  */
 h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid #999}
+    .site_title a {text-decoration:none; color:#222}
+        .site_title a:hover {text-decoration:underline}
+    .site_title .edit a {color:#06c}
 
 .post_list .post {margin-bottom:30px}
 
@@ -229,7 +232,7 @@ h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid
 /*
  * edit link
  */
-sup.edit {display:none; margin-left:0.5em}
+sup.edit {display:none}
     :hover>sup.edit {display:inline}
         
     sup.edit a {text-decoration:none}

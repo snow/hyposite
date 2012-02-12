@@ -15,6 +15,7 @@ class StreamV(gv.ListView):
     model = hypo.ImageCopy
     template_name = 'hypo/pg/image_list.html'
     context_object_name = 'image_list'
+    paginate_by = 20
     
     def get_queryset(self):
         site = hypo.Site.from_request(self.request)        
@@ -31,10 +32,10 @@ class StreamV(gv.ListView):
         if till:
             qs = qs.filter(pk__lt=till)
         
-        count = self.request.GET.get('count', None)
-        if not count:
-            count = 20
-        qs = qs[0:count]
+#        count = self.request.GET.get('count', None)
+#        if not count:
+#            count = 20
+#        qs = qs[0:count]
         
         return qs
     

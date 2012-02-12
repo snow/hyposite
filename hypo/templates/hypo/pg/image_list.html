@@ -3,7 +3,7 @@
 {% block page_class %}pg-image_list{% endblock %}
  
 {% block sec_m %}
-    <h1 class="site_title">{{ site.title }}{% if owner == user %}<sup class="edit"><a href="/site/settings/">edit</a></sup>{% endif %}</h1>
+    {% include 'hypo/com/site_title.html' %}
     {% if page_title %}
     <h2 class="page_title">{{ page_title }}</h2>
     {% endif %}
@@ -49,6 +49,10 @@
             {% endif %}
         {% endfor %}
     </div>
+    
+    {% if page_obj %}
+    {% include 'hypo/com/pager_step.html' %}
+    {% endif %}
     
     <script id="image_container_tpl" type="text/template">
         {% include 'hypo/com/image_container.html' %}
@@ -137,6 +141,15 @@
     });
     
     hypo.darkbox.append_thumb_from_uri('{{ request.path_info }}');
+    
+    j_imgls.infinitescroll({
+        navSelector: '.pagination',
+        nextSelector: '.pagination .next',
+        itemSelector: '.image_list .image_container',
+        loadingImg: '{{ STATIC_URL }}hypo/i/loading-220x19.gif'        
+    }, function(e_new){
+        j_imgls.masonry('appended', $(e_new));
+    });
 })(jQuery);
     </script>
 {% endblock %}

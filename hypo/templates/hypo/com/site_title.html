@@ -1,0 +1,6 @@
+<h1 class="site_title">
+    <a href="{{ site.uri }}" title="index of {{ site.title }}">{{ site.title }}</a>
+    {% if owner == user %}
+    <sup class="edit"><a href="/site/settings/">edit</a></sup>
+    {% endif %}
+</h1>

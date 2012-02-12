@@ -1,0 +1,8 @@
+<section class="tags">
+    <h4>tags</h4>
+    {% for tag in tags %}
+    {#% if tag.weight > 0 %#}
+    <a class="tag tag_w{{ tag.weight }}" href="{{ site.uri }}posts/tagged/{{ tag.slug }}/">{{ tag.name }}</a>
+    {#% endif %#}
+    {% endfor %}
+</section>

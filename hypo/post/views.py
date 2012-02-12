@@ -11,7 +11,7 @@ class StreamV(gv.ListView):
     model = hypo.Post
     template_name = 'hypo/pg/post_list.html'
     context_object_name = 'post_list'
-    paginate_by = 9
+    paginate_by = 10
     
     def get_queryset(self):
         site = hypo.Site.from_request(self.request)        
