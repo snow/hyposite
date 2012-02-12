@@ -28,6 +28,8 @@ urlpatterns = patterns('',
     
     url(r'^thirdparty/', include('hypo.thirdparty.urls')),
     
+    url(r'^import/', include('hypo.import.urls')),
+    
     url(r'^accounts/signup/', v.SignupV.as_view()),
     url(r'^accounts/settings/$', login_required(v.AccountSettingsV.as_view())),
     

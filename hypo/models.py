@@ -8,6 +8,7 @@ import time
 import tempfile
 import re
 from urllib2 import quote
+import math
 
 from BeautifulSoup import BeautifulSoup 
 from django.db import models
@@ -57,9 +58,20 @@ class UserProfile(models.Model):
         return False
     
     @property
-    def tags(self):
-        return Tag.objects.filter(Q(post__owner=self.user) | \
-                                  Q(imagecopy__owner=self.user))
+    def post_tags(self):
+        posts = self.user.post_set.all()
+        tag_dict = {}
+        for post in posts:
+            for tag in post.tags.all():
+                if tag.name in tag_dict:
+                    tag_dict[tag.name].count += 1
+                else:
+                    tag_dict[tag.name] = tag
+                    tag_dict[tag.name].count = 1
+        
+        tag_ls = tag_dict.values()
+        return Tag.build_tag_cloud(tag_ls)
+        
     
 @receiver(post_save, sender=User, 
           dispatch_uid='hypo.models.create_user_profile')
@@ -152,11 +164,36 @@ class SignupForm(forms.ModelForm):
 
 class Tag(models.Model):
     ''''''
+    WEIGHT_STEP = 4
+    
     name = models.CharField(max_length=255, unique=True)
+    count = 0
+    weight = 0
     
     @property
     def slug(self):
         return quote(self.name.encode('utf-8'), safe='')
+    
+    @classmethod
+    def build_tag_cloud(cls, tag_ls):
+        max_count = 0
+        
+        for tag in tag_ls:
+            max_count = max(max_count, tag.count)
+            
+        import logging
+        l = logging.getLogger('c')
+        #l.debug('max_count: '+str(max_count))
+        
+        for tag in tag_ls:
+            tag.weight = int(float(tag.count) / max_count * \
+                                (cls.WEIGHT_STEP + 1))
+            if tag.weight == cls.WEIGHT_STEP:
+                tag.weight -= 1
+            
+            #l.debug('weight: '+str(tag.weight))
+            
+        return tag_ls
         
         
 class Post(models.Model):
@@ -164,7 +201,7 @@ class Post(models.Model):
     id_str = models.CharField(max_length=255)
     slug = models.SlugField() # used in url as descript, it is NOT unique
     
-    title = models.CharField(max_length=30, blank=True)
+    title = models.CharField(max_length=100, blank=True)
     
     text_source = models.TextField()
     text_summary = models.CharField(max_length=140, blank=True)
@@ -194,16 +231,18 @@ class Post(models.Model):
         
         for tag_name in tags:
             tag_name = tag_name.strip()
-            try:
-                tag = Tag.objects.get(name=tag_name)
-            except Tag.DoesNotExist:
-                tag = Tag(name=tag_name)
-                tag.save()
-                
-            self.tags.add(tag)
+            
+            if tag_name:
+                try:
+                    tag = Tag.objects.get(name=tag_name)
+                except Tag.DoesNotExist:
+                    tag = Tag(name=tag_name)
+                    tag.save()
+                    
+                self.tags.add(tag)
     
     def get_absolute_url(self):
-        return '{}posts/v/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
+        return u'{}posts/v/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
     
     @property
     def uri(self):
@@ -240,10 +279,11 @@ class Post(models.Model):
     
     @classmethod
     def extract_content_summary(cls, content):
-        summary = str(content)
+        summary = content
         
         if 137 < len(summary):
-            return '{}...'.format('\n'.join(summary[:137].split('\n')[:10]))
+            lines = summary[:137].split('\n')[:10]
+            return u'{}...'.format('\n'.join(lines))
         else:
             return ''
 
@@ -254,7 +294,13 @@ def _post_pre_save(instance, **kwargs):
         Post.process_html_content_source(instance.text_source)
         
     slug = instance.title or instance.text_summary or content_plain
-    instance.slug = quote(slug.strip().replace(' ', '_'), safe='')[:50]
+    #slug = slug.strip().replace(' ', '_')
+    #instance.slug = quote(slug.encode('utf-8'), safe='')[:50]
+    instance.slug = slug.strip().replace(' ', '_')[:50]
+    
+    import logging
+    l = logging.getLogger('c')
+    #l.debug(instance.title)
     
     if not instance.created:
         instance.created = time.mktime(datetime.utcnow().timetuple())

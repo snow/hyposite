@@ -119,11 +119,11 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
 .sec-r nav a {text-decoration:none}
 .sec-r nav a:hover {text-decoration:underline}
 
-.sec-r .tag {text-decoration:none; padding:0 1px}
+.sec-r .tag {display:inline-block; text-decoration:none; padding:0 1px}
     .sec-r .tag:hover {text-decoration:underline}
-.sec-r .tag.c1 {font-size:1.2em}
-.sec-r .tag.c2 {font-size:1.6em}
-.sec-r .tag.c3 {font-size:2em}
+.sec-r .tag_w1 {font-size:1.2em}
+.sec-r .tag_w2 {font-size:1.6em}
+.sec-r .tag_w3 {font-size:2em}
 
 .sec-r textarea {width:20em; height:10em}
 

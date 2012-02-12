@@ -1,12 +1,15 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
 
-#from webapp.thirdparty.views import *
+import views as v
 
 urlpatterns = patterns('',    
 #    url(r'^$', IndexV.as_view()),
+
+    url(r'^import/$', v.ImportMenuV.as_view()),
     
-    url(r'douban/', include('hypo.thirdparty.douban.urls')),
+    url(r'^douban/', include('hypo.thirdparty.douban.urls')),
+    url(r'^wordpress/', include('hypo.thirdparty.wordpress.urls')),
     
 #    url(r'^douban/authenticate/$', DoubanAuthenticateStartV.as_view()),
 #    url(r'^douban/authenticate_return/$', DoubanAuthenticateReturnV.as_view()),

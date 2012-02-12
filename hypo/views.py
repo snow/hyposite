@@ -80,6 +80,7 @@ class SignupV(gv.CreateView):
         
         profile = user.get_profile()        
         profile.fullname = form.cleaned_data['fullname']
+        profile.timezone = form.cleaned_data['timezone']
         profile.save()
         
         account_to_link.owner = user

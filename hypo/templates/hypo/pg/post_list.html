@@ -23,8 +23,10 @@
 {% include 'hypo/com/site_nav_r.html' with cur='posts' %}
 <section class="tags">
     <h4>tags</h4>
-    {% for tag in owner.get_profile.tags %}
-    <a class="tag" href="{{ site.uri }}posts/tagged/{{ tag.slug }}/">{{ tag.name }}</a>
+    {% for tag in owner.get_profile.post_tags %}
+    {#% if tag.weight > 0 %#}
+    <a class="tag tag_w{{ tag.weight }}" href="{{ site.uri }}posts/tagged/{{ tag.slug }}/">{{ tag.name }}</a>
+    {#% endif %#}
     {% endfor %}
 </section>
 

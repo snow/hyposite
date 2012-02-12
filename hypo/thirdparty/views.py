@@ -5,12 +5,12 @@ from django.conf import settings
 
 #import flickrapi
 
-from pyfyd.models import TwitterAccount, GoogleAccount, DoubanAccount, \
-                         FlickrAccount
-import pyfyd.google.views as pgv
-import pyfyd.twitter.views as ptv
-
-import pyfyd.flickr.views as pfv
+#from pyfyd.models import TwitterAccount, GoogleAccount, DoubanAccount, \
+#                         FlickrAccount
+#import pyfyd.google.views as pgv
+#import pyfyd.twitter.views as ptv
+#
+#import pyfyd.flickr.views as pfv
 #from core.models import GrubJob
 #from core.grub.grubbers.flickr import PeopleStreamGrubber
 
@@ -47,6 +47,13 @@ import pyfyd.flickr.views as pfv
 #        return context
 #import pyfyd.douban.views as pdv
 #import pyfyd
+
+
+class ImportMenuV(gv.TemplateView):
+    ''''''
+    template_name = 'hypo/pg/import_menu.html'
+
+
 #
 #class DoubanAuthenticateStartV(pdv.AuthStartV):
 #    '''super handles every thing'''    
