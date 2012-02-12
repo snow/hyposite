@@ -30,8 +30,9 @@
     <label>
         <span class="label">Your timezone</span>
         <select name="timezone">
-            <option value="0" selected="true">UTC</option>
-            <option value="8">Asia/Chongqing</option>
+            <option value="0" {% if 8 == form.timezone.value %}selected="true"{% endif %}>UTC</option>
+            <option value="1" {% if 1 == form.timezone.value %}selected="true"{% endif %}>+1: CET(Central European Time Zone)</option>
+            <option value="8" {% if 8 == form.timezone.value %}selected="true"{% endif %}>+8: Taipei, Beijing, Chongqing, Hongkong</option>
         </select>
     </label>
 </div>

@@ -38,7 +38,7 @@ class UserProfile(models.Model):
     '''
     user = models.ForeignKey(User, unique=True)
     fullname = models.CharField(max_length=255)
-    about = models.TextField()
+    about = models.TextField(blank=True)
     avatar_uri = models.URLField()
     timezone = models.SmallIntegerField(default=0)
     
