@@ -6,7 +6,6 @@ import views as v
 urlpatterns = patterns('',
     url(r'^$', v.IndexV.as_view()),
     
-    url(r'^site/demo/', include('hypo.demo.urls')),
     url(r'^site/settings/', login_required(v.SiteSettingsV.as_view())),
     #url(r'^site/(?P<slug>[^/]+)/img/$', v.PhotoStreamV.as_view()),
     
@@ -27,8 +26,6 @@ urlpatterns = patterns('',
     #url(r'^album/', include('hypo.album.urls')),
     
     url(r'^thirdparty/', include('hypo.thirdparty.urls')),
-    
-    url(r'^import/', include('hypo.import.urls')),
     
     url(r'^accounts/signup/', v.SignupV.as_view()),
     url(r'^accounts/settings/$', login_required(v.AccountSettingsV.as_view())),
