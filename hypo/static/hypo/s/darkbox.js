@@ -55,6 +55,7 @@
                 j_hd.show();
                 j_sidebar.show();
                 j_ft.show();
+                center_current_thumb();
                 layout();
             }
         }).

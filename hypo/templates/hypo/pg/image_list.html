@@ -140,7 +140,7 @@
         hypo.darkbox.from_uri(j_t.attr('href'));
     });
     
-    hypo.darkbox.append_thumb_from_uri('{{ request.path_info }}');
+    hypo.darkbox.append_thumb_from_uri(location.href);
     
     j_imgls.infinitescroll({
         navSelector: '.pagination',
@@ -149,6 +149,12 @@
         loadingImg: '{{ STATIC_URL }}hypo/i/loading-220x19.gif'        
     }, function(e_new){
         j_imgls.masonry('appended', $(e_new));
+    });
+    
+    rcp.j_doc.ajaxSuccess(function(evt, xhr, opt){
+        if(/^\?page=\d+/.test(opt.url)){
+            hypo.darkbox.append_thumb_from_uri(location.pathname + opt.url);
+        }
     });
 })(jQuery);
     </script>
