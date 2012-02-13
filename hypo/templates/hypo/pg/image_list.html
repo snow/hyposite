@@ -87,6 +87,11 @@
             itemSelector: '.image_container',
             //columnWidth: 200
         });
+        
+        // load event dont propagate so have to bind for each one
+        j_imgls.find('img').load(function(evt){
+            j_imgls.masonry('reload');
+        });
     }
     
     var masonry_reload_timeout = false;
@@ -153,7 +158,12 @@
         itemSelector: '.image_list .image_container',
         loadingImg: '{{ STATIC_URL }}hypo/i/loading-220x19.gif'        
     }, function(e_new){
-        j_imgls.masonry('appended', $(e_new));
+        $.each(e_new, function(idx, el){
+            var j_t = $(el);
+            j_t.find('img').load(function(evt){
+                j_imgls.masonry('appended', j_t);
+            });
+        });        
     });
     
     rcp.j_doc.ajaxSuccess(function(evt, xhr, opt){

@@ -167,7 +167,7 @@ h1.site_title {margin:0.5em 0 1em; padding-bottom:0.5em; border-bottom:1px solid
 /*
  * image list
  */
-.image_container {position:relative; float:left}
+.image_container {position:relative; float:left; text-decoration:none}
     .image_container img {float:left; border:4px solid transparent; width:192px}
         .image_container:hover img {border-color:#ccc}
     
