@@ -8,14 +8,14 @@ from django.contrib.auth import authenticate, login
 from pyfyd.models import DoubanAccount
 from pyfyd.utils import ThirdpartyAuthBackend
 import pyfyd.douban.views as pdv
-
+from pyfyd.common.views import AuthenticateReturnMixin
 
 class AuthenticateStartV(pdv.AuthStartV):
     '''super handles every thing'''    
     callback = '/thirdparty/douban/authenticate_return/'
     
     
-class AuthenticateReturnV(pdv.AuthReturnV):
+class AuthenticateReturnV(AuthenticateReturnMixin, pdv.AuthReturnV):
     '''super handles every thing'''
     success_uri = '/dashboard/'
     
@@ -41,7 +41,7 @@ class AuthenticateReturnV(pdv.AuthReturnV):
             
             if user:
                 login(request, user)
-                return HttpResponseRedirect(self.success_uri)
+                return HttpResponseRedirect(self.get_success_uri())
             else:
                 # @todo: what else may happen here?
                 raise Exception('auth failed')

@@ -49,17 +49,7 @@
 {% block sec_r %}
 <section class="signin">
     <h3>Signin</h3>
-    <div>Use your account on...
-        <ul class="singinwith">
-        <li><a class="google" href="/thirdparty/google/authenticate/?{{ querystring }}">Google</a></li>
-        <li><a class="twitter" href="/thirdparty/twitter/authenticate/?{{ querystring }}">Twitter</a></li>
-        <li><a class="douban" href="/thirdparty/douban/authenticate/?{{ querystring }}">Douban</a></li>
-        </ul>
-    </div>
-    <div class="noopenid">
-        If you want ikran has it's own signup/signin<br />
-        <a href="/nemo/" target="_blank">Vote for your opinion!</a>
-    </div>
+    {% include 'hypo/com/signin.html' %}
 </section>
 {% endblock %}
 

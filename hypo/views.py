@@ -109,6 +109,11 @@ class SignupV(gv.CreateView):
 #            return super(SignupV, self).get(request, *args, **kwargs)
         
         
+class SigninV(gv.TemplateView):
+    ''''''
+    template_name = 'hypo/pg/signin.html'
+        
+        
 #class SiteCreateV(gv.CreateView):
 #    ''''''     
 #    form_class = hypo.SiteForm

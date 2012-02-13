@@ -1,0 +1,11 @@
+<div>Use your account on...
+    <ul class="singinwith">
+    <li><a class="google" href="/thirdparty/google/authenticate/?{{ request.META.QUERY_STRING }}">Google</a></li>
+    <li><a class="twitter" href="/thirdparty/twitter/authenticate/?{{ request.META.QUERY_STRING }}">Twitter</a></li>
+    <li><a class="douban" href="/thirdparty/douban/authenticate/?{{ request.META.QUERY_STRING }}">Douban</a></li>
+    </ul>
+</div>
+<div class="noopenid">
+    If you want hypo has it's own signup/signin<br />
+    <a href="/nemo/" target="_blank">Vote for your opinion!</a>
+</div>
