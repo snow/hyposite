@@ -12,7 +12,7 @@
             {% include 'hypo/com/post_container.html' %}
         {% empty %}
             {% if owner == user %}
-            <a href="/post/create" style="font-size:xx-large">Write your first post</a>
+            <a href="/posts/create/" style="font-size:xx-large">Write your first post</a>
             {% endif %}
         {% endfor %}
     </section>
