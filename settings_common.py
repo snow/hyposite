@@ -1,5 +1,10 @@
 # Django settings for prjhypo project.
 from os.path import dirname, abspath
+import djcelery
+djcelery.setup_loader()
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = dirname(abspath(__file__))
 PROJECT_NAME = PROJECT_ROOT.split('/')[-1]
@@ -10,9 +15,6 @@ EMAIL_SUBJECT_PREFIX = '[Hypo] '
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
@@ -148,6 +150,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'pyfyd',
     'hypo',
+    'djcelery',
 )
 
 # A sample logging configuration. The only tangible logging
