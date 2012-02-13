@@ -100,8 +100,8 @@
         if(options.auto_submit){
             j_field.on('change', function(evt){
                 evt.preventDefault();
-                queue_files(evt.target.files, options.upload_uri, accept_mime,
-                            evt.timeStamp);
+                queue_files(evt.target.files, options.upload_uri,
+                            {check_mime:accept_mime});
             });
             
             if(options.hide_submit){
@@ -110,11 +110,17 @@
         }
     };
     
-    function queue_files(filelist, upload_uri, accept_mime, timestamp){
+    function queue_files(filelist, upload_uri, opt){
+        opt = $.extend({
+            check_mime: false
+        }, opt);
+        
         var mime_check = false;
-        if(accept_mime){
-            mime_check = new RegExp('^{}'.replace('{}', accept_mime)); 
+        if(opt.check_mime){
+            mime_check = new RegExp('^{}'.replace('{}', opt.check_mime)); 
         }
+        
+        timestamp = new Date().getTime();
         
         $.each(filelist, function(idx, file){
             if(mime_check && !mime_check.test(file.type)){return;}
@@ -175,37 +181,26 @@
         $.ajax(job.upload_uri, ajax_settings);
     }
     
-    
-    
-    
-    /*
-    
-    var is_drag_evt_handled = false,
-    
-        j_mask,
-        j_inr,
+    var j_fsdnd,
+        j_fsdnd_inr,
+        j_body,
         
-        API_UPLOAD_URI = '/img/uploadraw/'+
-                         '?filename={filename}&album_id={album_id}',
-        MAX_UPLOAD_CONN = 2,
+        is_drag_evt_handled,
         
-        cur_upload_conn = 0,
-        //files_to_upload = {},
-        upload_queue = [];
+        fsdnd_uri,
+        fsdnd_opt;
         
-    hypo.imgupload.E_QUEUE_ADDED = 'evt-hypo-queue_added';
-    hypo.imgupload.E_QUEUE_START = 'evt-hypo-queue_start';
-    hypo.imgupload.E_UPLOAD_START = 'evt-hypo-upload_start';
-    hypo.imgupload.E_UPLOAD_DONE = 'evt-hypo-upload_done';
-    hypo.imgupload.E_UPLOAD_FAILED = 'evt-hypo-upload_failed';
-    hypo.imgupload.E_UPLOAD_COMPLETE = 'evt-hypo-upload_complete';
+    clsr.fsdnd = function(uri, opt){
+        opt = $.extend({
+            check_mime: false
+        }, opt);
         
-    rcp.preimg('/s/common/i/loading-16.gif');
-    rcp.preimg('/s/common/i/alert-16.png');
-    
-    hypo.imgupload.init_dnd = function(){
-        j_mask = $(_settings.MASK_TPL);
-        j_inr = j_mask.find('.inr');
+        fsdnd_uri = uri;
+        fsdnd_opt = opt;
+        
+        j_fsdnd = $($('#fsdnd_mask_tpl').text());
+        j_fsdnd_inr = j_fsdnd.find('.inr');
+        j_body = $('body');
         
         rcp.j_doc.on({
             'dragover': on_drag_over,
@@ -215,11 +210,8 @@
             }
         });
         
-        rcp.j_doc.on('click', 'body>.dropzone', after_drop);
-        rcp.j_doc.on(hypo.imgupload.E_QUEUE_START, on_queue_start);
-        rcp.j_doc.on(hypo.imgupload.E_UPLOAD_COMPLETE, on_queue_start);
-        rcp.j_doc.on(hypo.imgupload.E_UPLOAD_START, upload_file);
-    }
+        j_fsdnd.on('click', after_drop);
+    };
     
     function on_drag_over(evt){
         if(!is_drag_evt_handled){
@@ -227,27 +219,27 @@
             
             evt.originalEvent.dataTransfer.dropEffect = 'copy';
             
-            $('body').append(j_mask);
-            j_inr.width(j_mask.width() - 
-                         (j_inr.outerWidth() - j_inr.width()));
-            j_inr.height(j_mask.height() - 
-                          (j_inr.outerHeight() - j_inr.height()));   
+            j_body.append(j_fsdnd);
+            j_fsdnd_inr.width(j_fsdnd.width() - 
+                         (j_fsdnd_inr.outerWidth() - j_fsdnd_inr.width()));
+            j_fsdnd_inr.height(j_fsdnd.height() - 
+                          (j_fsdnd_inr.outerHeight() - j_fsdnd_inr.height()));   
         }
         return false;
     }
     
     function on_drop(evt){
         evt.preventDefault();
-        queue_images(evt.originalEvent.dataTransfer.files, evt.timeStamp);
+        evt.stopPropagation();
+        queue_files(evt.originalEvent.dataTransfer.files, fsdnd_uri, fsdnd_opt);
         
         after_drop();
         return false;
     }
     
     function after_drop(){
-        j_mask.detach();
+        j_fsdnd.detach();
         is_drag_evt_handled = false;
     }
     
-    */
 })(jQuery);

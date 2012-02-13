@@ -15,6 +15,9 @@
         <input id="filefield_to_init" name="img" type="file" multiple="multiple" accept="image/*" />
         <div class="c"></div>
     </form>
+    <script id="fsdnd_mask_tpl" type="text/template">
+        {% include 'hypo/com/fullscreen_drag_and_drop_mask.html' %}
+    </script>
     <script>
 (function($){
     var j_field = $('#filefield_to_init').removeAttr('id');
@@ -26,6 +29,8 @@
     rcp.filefield.ajaxify(j_field, {
         upload_uri: '/images/upload_raw/',
     });
+    
+    rcp.filefield.fsdnd('/images/upload_raw/', {'check_mime': 'image/*'});
     
     rcp.j_doc.on(rcp.filefield.E_QUEUE_ADDED, function(evt, job){
         job.params = {
