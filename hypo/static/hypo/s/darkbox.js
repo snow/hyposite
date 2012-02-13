@@ -27,7 +27,7 @@
         E_NEXT = 'evt-hypo-darkbox-next',
         E_PREV = 'evt-hypo-darkbox-prev',
         
-        PLACEHOLDER_URI = '/s/common/i/loading-31.gif';
+        PLACEHOLDER_URI = '/s/hypo/i/loading-31.gif';
         
     function init_evt(){        
         j_darkbox.on('click', '.next', function(evt){
@@ -116,9 +116,9 @@
         j_thumb_tpl = $($('#thumb_container_tpl').text());
         
         rcp.preimg(PLACEHOLDER_URI);
-        rcp.preimg('/s/common/i/view-40.png');
-        rcp.preimg('/s/common/i/arrow-l-45_93.png');
-        rcp.preimg('/s/common/i/arrow-r-45_93.png');
+        rcp.preimg('/s/hypo/i/view-40.png');
+        rcp.preimg('/s/hypo/i/arrow-l-45_93.png');
+        rcp.preimg('/s/hypo/i/arrow-r-45_93.png');
         
         init_evt();
         init_keyboard();

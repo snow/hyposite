@@ -20,8 +20,8 @@
         upload_queue = [];
     
     // TODO: these should not be here!! 
-    rcp.preimg('/s/common/i/loading-16.gif');
-    rcp.preimg('/s/common/i/alert-16.png');
+    rcp.preimg('/s/hypo/i/loading-16.gif');
+    rcp.preimg('/s/hypo/i/alert-16.png');
     
     var _initialized = false;
     function init_if_not_yet(){
