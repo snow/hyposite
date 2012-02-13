@@ -318,12 +318,12 @@ def _post_pre_save(instance, **kwargs):
     #instance.slug = quote(slug.encode('utf-8'), safe='')[:50]
     instance.slug = slug.strip().replace(' ', '_')[:50]
     
-    import logging
-    l = logging.getLogger('c')
+    #import logging
+    #l = logging.getLogger('c')
     #l.debug(instance.title)
     
     if not instance.created:
-        instance.created = time.mktime(datetime.utcnow().timetuple())
+        instance.created = int(time.time())
     
     if not instance.updated:
         instance.updated = instance.created
@@ -542,7 +542,7 @@ class ImageFile(models.Model):
 def _imagefile_pre_save(instance, **kwargs):
     ''''''    
     if not instance.created:
-        instance.created = time.mktime(datetime.utcnow().timetuple())
+        instance.created = int(time.time())
         
   
 class ImageCopy(models.Model):
@@ -691,4 +691,4 @@ class ImageCopy(models.Model):
 def _imagecopy_pre_save(instance, **kwargs):
     ''''''    
     if not instance.created:
-        instance.created = time.mktime(datetime.utcnow().timetuple())
+        instance.created = int(time.time())
