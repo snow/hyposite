@@ -1,0 +1,14 @@
+{% extends 'hypo/layout/row-hbf_col-m.html' %}
+{% block page_class %}pg-404{% endblock %}
+
+{% block sec_m %}
+<div class="errmsg">
+    <h1>hypo count not find this page</h1>
+    {% if request.META.HTTP_REFERER %}
+    <a href="{{ request.META.HTTP_REFERER }}">go back</a>
+    {% else %}
+    <a href="/">home</a>
+    {% endif %}
+    <img height="450px" src="http://httpcats.herokuapp.com/404" alt="" />
+</div>
+{% endblock%}
