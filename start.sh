@@ -2,8 +2,12 @@
 
 # Replace these three settings.
 PROJDIR="`pwd`"
-PIDFILE="$PROJDIR/logs/fcgi.pid"
 
 cd $PROJDIR
 sudo ./stop.sh
+
+PIDFILE="$PROJDIR/logs/fcgi.pid"
 sudo ./manage.py runfcgi pidfile=$PIDFILE host=127.0.0.1 port=3051 #daemonize=false
+
+CELERY_PIDFILE="$PROJDIR/logs/celeryd.pid"
+sudo ./manage.py celeryd --pidfile=$CELERY_PIDFILE &
