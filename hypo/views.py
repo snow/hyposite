@@ -3,6 +3,7 @@ import django.views.generic as gv
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from pyfyd.utils import ThirdpartyAuthBackend
 
@@ -186,44 +187,11 @@ class SiteSettingsV(gv.UpdateView):
     def get_object(self):
         return self.request.user.get_profile().primary_site
     
-
-#class PhotoStreamV(gv.DetailView):
-#    ''''''
-#    model = User
-#    slug_field = 'username'
-#    context_object_name = 'owner'
-#    template_name = 'hypo/pg/photo_list.html'
-#    
-#    def get_context_data(self, **kwargs):
-#        context = super(PhotoStreamV, self).get_context_data(**kwargs)
-#        context['site'] = hypo.Site.objects.get(owner=self.object)
-#        #context['photo_list'] = hypo.Post.objects.filter(author=self.object)
-#        
-#        return context
      
-#class LuciferV(gv.View):
-#    '''Evil codes'''
-#    def get(self, request, *args, **kwargs):
-#        fucker = '''<h1>fucker</h1>
-#<p style="font-size:xx-large">this is just a <br />
-#paragraph</p>
-#<p>Lorem Ipsum is<br /> 
-#simply <br />
-#dummy text of the <br />
-#printing <br />
-#and<br /> 
-#typesetting <br />
-#industry. Lorem<br /> 
-#Ipsum has<br /> 
-#been the industry's standard dummy <br />
-#text ever since the 1500s, when an <br />
-#unknown printer took a galley of type and <br />
-#scrambled it to make a type specimen book. <br />
-#It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-#<div>what the fuck</div>
-#    
-#<script>alert('im evil!');</script>'''
-#        
-#        output, summary = hypo.Post.process_html_content_source(fucker) 
-#        
-#        return HttpResponse('<pre>{}</pre>'.format(summary))
+class LuciferV(gv.View):
+    '''Evil codes'''
+    def get(self, request, *args, **kwargs):
+        if not getattr(settings, 'DEBUG', False):
+            raise Http404
+        
+        # evil codes here

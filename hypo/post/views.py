@@ -67,6 +67,7 @@ class CreateV(gv.CreateView):
         post.tag_str = form.cleaned_data['tag_str']
         
         self.object = post # hack for super methods to work
+        hypo.post_to_push.send_robust(sender=hypo.Post, instance=post)
         return HttpResponseRedirect(self.get_success_url())
 
 

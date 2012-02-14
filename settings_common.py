@@ -151,6 +151,7 @@ INSTALLED_APPS = (
     'pyfyd',
     'hypo',
     'djcelery',
+    'hypo_douban',
 )
 
 # A sample logging configuration. The only tangible logging

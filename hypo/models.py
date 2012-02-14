@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-import cgi
 import json
 import hashlib
 import os
@@ -8,25 +7,24 @@ import time
 import tempfile
 import re
 from urllib2 import quote
-import math
 
 from BeautifulSoup import BeautifulSoup 
 from django.db import models
-from django.db.models import Q
 from django.db.models.signals import pre_save, post_save
 from django.db.models.fields.files import FieldFile
 from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
-from django.dispatch import receiver
+from django.dispatch import receiver, Signal
 from django import forms
 from django.conf import settings
 from PIL import Image
 import pyexiv2 
 from pyrcp import struk
 
-from hypo.utils.utcdatetime import UTCDatetime, SimpleTZ
+from hypo.utils.utcdatetime import UTCDatetime
+
+post_to_push = Signal(providing_args=['instance'])    
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -100,11 +98,21 @@ class Site(models.Model):
     @property
     def uri(self):
         server_name = getattr(settings, 'SERVER_NAME', False)
-        
+        site_name_mode = getattr(settings, 'SITE_NAME_MODE', 'path')
         if server_name:
-            return '//{}.{}/'.format(self.slug, server_name)
+            if 'path' != site_name_mode:
+                server_name = '{}.{}'.format(self.slug, server)
+            
+            server_name = 'http://{}/'.format(server_name)
         else:
-            return '/site/{}/'.format(self.slug)
+            server_name = '/'
+            
+        if 'path' == site_name_mode:
+            site_name = '{}site/{}/'.format(server_name, self.slug)
+        else:
+            site_name = server_name
+        
+        return site_name
     
     @classmethod
     def from_request(cls, request):
@@ -118,7 +126,7 @@ class Site(models.Model):
             if subdomain:
                 slug = subdomain
         
-        else:
+        if not slug:
             matches = re.match('/site/([-\w]+)/', request.path_info)
             if matches:
                 slug = matches.groups()[0]
@@ -219,7 +227,10 @@ class Tag(models.Model):
 class Post(models.Model):
     '''A post may contain title, text content and images'''    
     id_str = models.CharField(max_length=255)
-    slug = models.SlugField() # used in url as descript, it is NOT unique
+    # used in url as descript, it is NOT unique
+    # best title length is 64 char
+    # after quote(str.encode('utf-8')), it's 64 * 9 = 576  
+    slug = models.SlugField(max_length=600)
     
     title = models.CharField(max_length=100, blank=True)
     
@@ -263,10 +274,12 @@ class Post(models.Model):
     
     def get_absolute_url(self):
         return u'{}posts/v/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
+        #return u'{}posts/v/{}/'.format(self.site.uri, self.id_str)
     
     @property
     def uri(self):
         return self.get_absolute_url()
+        #return u'posts/v/{}/{}/'.format(self.id_str, self.slug)
     
     @property
     def summary(self):
@@ -295,28 +308,60 @@ class Post(models.Model):
         summary = cls.extract_content_summary(plain)
         
         content = soup.prettify()
-        return (content, plain, summary)
+        return (content, summary)
     
     @classmethod
     def extract_content_summary(cls, content):
-        summary = content
+        truncated = False
         
-        if 137 < len(summary):
-            lines = summary[:137].split('\n')[:10]
-            return u'{}...'.format('\n'.join(lines))
+        if 100 < len(content):
+            content = content[:100]
+            truncated = True
+            
+        lines = content.split('\n')
+        if 10 < len(lines):
+            lines = lines[:10]
+            truncated = True
+            
+        content = '\n'.join(lines)
+        
+        if truncated:
+            content += '...'
+            
+        return content
+    
+    @classmethod
+    def extract_slug(cls, instance):
+        import logging
+        l = logging.getLogger('c')
+        
+        if instance.title:
+            slug = instance.title
         else:
-            return ''
+            slug = instance.text_summary
+            # only the first line
+            slug = slug.partition('\n')[0].partition('\r')[0]
+            # strip possible punctuations at line end
+            slug = slug.strip(u',，:：.。-—')
+            
+        #slug = slug.strip().replace(' ', '_')
+        #instance.slug = quote(slug.encode('utf-8'), safe='')[:50]
+        
+        l.debug(slug)
+        slug = quote(slug[:64].encode('utf-8'), safe='')
+        l.debug(slug)
+        return slug
 
 @receiver(pre_save, sender=Post, dispatch_uid='hypo.models.post_pre_save')
 def _post_pre_save(instance, **kwargs):
     ''''''
-    instance.text, content_plain, instance.text_summary = \
+    instance.text, instance.text_summary = \
         Post.process_html_content_source(instance.text_source)
         
-    slug = instance.title or instance.text_summary or content_plain
+    #slug = instance.title or instance.text_summary or content_plain
     #slug = slug.strip().replace(' ', '_')
     #instance.slug = quote(slug.encode('utf-8'), safe='')[:50]
-    instance.slug = slug.strip().replace(' ', '_')[:50]
+    instance.slug = Post.extract_slug(instance)
     
     #import logging
     #l = logging.getLogger('c')
@@ -339,7 +384,7 @@ def _post_post_save(instance, created, **kwargs):
         
 class PostForm(forms.ModelForm):
     ''''''
-    tag_str = forms.CharField()
+    tag_str = forms.CharField(required=False)
     
     class Meta:
         model = Post
