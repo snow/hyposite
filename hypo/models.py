@@ -208,10 +208,6 @@ class Tag(models.Model):
         
         for tag in tag_ls:
             max_count = max(max_count, tag.count)
-            
-        import logging
-        l = logging.getLogger('c')
-        #l.debug('max_count: '+str(max_count))
         
         for tag in tag_ls:
             tag.weight = int(float(tag.count) / max_count * \
@@ -279,7 +275,6 @@ class Post(models.Model):
     @property
     def uri(self):
         return self.get_absolute_url()
-        #return u'posts/v/{}/{}/'.format(self.id_str, self.slug)
     
     @property
     def summary(self):
@@ -332,9 +327,6 @@ class Post(models.Model):
     
     @classmethod
     def extract_slug(cls, instance):
-        import logging
-        l = logging.getLogger('c')
-        
         if instance.title:
             slug = instance.title
         else:
@@ -343,14 +335,8 @@ class Post(models.Model):
             slug = slug.partition('\n')[0].partition('\r')[0]
             # strip possible punctuations at line end
             slug = slug.strip(u',，:：.。-—')
-            
-        #slug = slug.strip().replace(' ', '_')
-        #instance.slug = quote(slug.encode('utf-8'), safe='')[:50]
         
-        l.debug(slug)
-        slug = quote(slug[:64].encode('utf-8'), safe='')
-        l.debug(slug)
-        return slug
+        return quote(slug[:64].encode('utf-8'), safe='')
 
 @receiver(pre_save, sender=Post, dispatch_uid='hypo.models.post_pre_save')
 def _post_pre_save(instance, **kwargs):
@@ -358,14 +344,7 @@ def _post_pre_save(instance, **kwargs):
     instance.text, instance.text_summary = \
         Post.process_html_content_source(instance.text_source)
         
-    #slug = instance.title or instance.text_summary or content_plain
-    #slug = slug.strip().replace(' ', '_')
-    #instance.slug = quote(slug.encode('utf-8'), safe='')[:50]
     instance.slug = Post.extract_slug(instance)
-    
-    #import logging
-    #l = logging.getLogger('c')
-    #l.debug(instance.title)
     
     if not instance.created:
         instance.created = int(time.time())

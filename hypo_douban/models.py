@@ -13,7 +13,7 @@ def _post_to_push(instance, **kwargs):
         user = instance.owner
         account = user.doubanaccount_set.all()[0]
     except:
-        raise # TODO:
+        raise # @todo: 
     else:
         content = u'{} {}'.format(instance.text_summary, instance.uri)        
         if instance.title:
