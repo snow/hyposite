@@ -393,7 +393,7 @@ class Post(models.Model):
             # strip possible punctuations at line end
             slug = slug.strip(u',，:：.。-—')
         
-        return cls.extract_slug(slug[:64])
+        return cls.quote_slug(slug[:64])
     
 
 @receiver(pre_save, sender=Post, dispatch_uid='hypo.models.post_pre_save')
