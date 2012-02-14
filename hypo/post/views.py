@@ -84,6 +84,14 @@ class DetailV(gv.DetailView):
             raise Http404()
         else:
             return post
+        
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
+        slug_in_request = self.request.path[len(post.abspath_short):-1]
+        if hypo.Post.quote_slug(slug_in_request) == post.slug:
+            return super(DetailV, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(post.abspath_full)
 
 
 class UpdateV(gv.UpdateView):

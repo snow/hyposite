@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver, Signal
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from PIL import Image
 import pyexiv2 
 from pyrcp import struk
@@ -89,6 +90,10 @@ class Site(models.Model):
     owner = models.ForeignKey(User, unique=True)
     is_primary = models.BooleanField(default=True)
     
+    URI_MODE_CONFIG_KEY = 'SITE_URI_MODE'
+    URI_MODE_PATH = 'path'
+    URI_MODE_SUBDOMAIN = 'subdomain'
+    
     def save(self, *args, **kwargs):
         if '' == self.title:
             self.title = '{}\'s Blog'.format(self.owner.get_profile().fullname)
@@ -96,9 +101,36 @@ class Site(models.Model):
         return super(Site, self).save(*args, **kwargs)
     
     @property
+    def path_prefix(self):
+        site_uri_mode = getattr(settings, self.URI_MODE_CONFIG_KEY, 
+                                self.URI_MODE_PATH) 
+        
+        if self.URI_MODE_PATH == site_uri_mode:
+            return '/site/{}/'.format(self.slug)
+        else:
+            return '/'
+        
+    def apply_path_prefix(self, relpath):
+        return u'{}{}'.format(self.path_prefix, relpath)
+    
+    @property
+    def host_name(self):
+        if not hasattr(settings, 'HOST_NAME'):
+            raise ImproperlyConfigured('HOST_NAME must be configured for site to work')
+        
+        site_uri_mode = getattr(settings, self.URI_MODE_CONFIG_KEY, 
+                                self.URI_MODE_PATH) 
+        
+        if self.URI_MODE_SUBDOMAIN == site_uri_mode:
+            return '{}.{}'.format(self.slug, settings.HOST_NAME)
+        else:
+            return settings.HOST_NAME
+    
+    @property
     def uri(self):
         server_name = getattr(settings, 'SERVER_NAME', False)
-        site_name_mode = getattr(settings, 'SITE_NAME_MODE', 'path')
+        site_name_mode = getattr(settings, self.URI_MODE_CONFIG_KEY, 
+                                 self.URI_MODE_PATH)
         if server_name:
             if 'path' != site_name_mode:
                 server_name = '{}.{}'.format(self.slug, server)
@@ -271,10 +303,31 @@ class Post(models.Model):
     def get_absolute_url(self):
         return u'{}posts/v/{}/{}/'.format(self.site.uri, self.id_str, self.slug)
         #return u'{}posts/v/{}/'.format(self.site.uri, self.id_str)
+        
+    @property
+    def relpath_short(self):
+        return u'posts/v/{}/'.format(self.id_str)
+    
+    @property
+    def relpath_full(self):
+        return u'{}{}/'.format(self.relpath_short, self.slug)
+    
+    @property
+    def abspath_short(self):
+        return self.site.apply_path_prefix(self.relpath_short)
+        
+    @property
+    def abspath_full(self):
+        return u'{}{}/'.format(self.abspath_short, self.slug)
     
     @property
     def uri(self):
-        return self.get_absolute_url()
+        #return self.get_absolute_url()
+        return 'http://' + self.site.host_name + self.abspath_full
+    
+    @property
+    def short_uri(self):
+        return 'http://' + self.site.host_name + self.abspath_short
     
     @property
     def summary(self):
@@ -326,6 +379,10 @@ class Post(models.Model):
         return content
     
     @classmethod
+    def quote_slug(cls, slug):
+        return quote(slug.encode('utf-8'), safe='')
+    
+    @classmethod
     def extract_slug(cls, instance):
         if instance.title:
             slug = instance.title
@@ -336,7 +393,8 @@ class Post(models.Model):
             # strip possible punctuations at line end
             slug = slug.strip(u',，:：.。-—')
         
-        return quote(slug[:64].encode('utf-8'), safe='')
+        return cls.extract_slug(slug[:64])
+    
 
 @receiver(pre_save, sender=Post, dispatch_uid='hypo.models.post_pre_save')
 def _post_pre_save(instance, **kwargs):

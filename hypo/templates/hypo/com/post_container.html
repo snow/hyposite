@@ -1,7 +1,7 @@
 <article class="post">
     {% if post.title %}<h1>{{ post.title }}</h1>{% endif %}
     {% if post.summary %}
-    <a class="summary" href="{{ post.uri }}" 
+    <a class="summary" href="{{ post.abspath_full }}" 
         target="_blank">{{ post.summary|safe }}<div class="indicator">&#x21f1;read more</div><div class="c"></div></a>
     {% else %}
     <div class="content">{{ post.text|safe }}</div>
